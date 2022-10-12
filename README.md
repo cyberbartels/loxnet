@@ -1,2 +1,3 @@
 # loxnet
-Implementing Robert Nystrom's lox language in C#
+Implementing Robert Nystrom's lox language in C#, see [Crafting Interpreters](https://craftinginterpreters.com/)
+Or at least trying to....
