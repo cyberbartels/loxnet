@@ -8,8 +8,21 @@ namespace de.softwaremess.loxnet
 {
     public class Lox
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
+            if (args.Length > 1)
+            {
+                Console.WriteLine("Usage: Lox [script]");
+                throw new ArgumentException("Needs one argument [script]");
+            }
+            else if (args.Length == 1)
+            {
+                throw new NotImplementedException("");
+            }
+            else
+            {
+                throw new NotImplementedException("");
+            }
 
         }
     }
