@@ -1,3 +1,5 @@
+using de.softwaremess.loxnet;
+
 namespace loxnetTests
 {
     public class Tests
@@ -8,9 +10,9 @@ namespace loxnetTests
         }
 
         [Test]
-        public void Test1()
+        public void CanCreateLoxClass()
         {
-            Assert.Pass();
+            Lox lox = new Lox();
         }
     }
 }
