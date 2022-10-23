@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "loxnet", "loxnet.csproj", "{A0E7909E-B408-442D-8C69-E0085F4CDA18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "loxnet", "loxnet.csproj", "{A0E7909E-B408-442D-8C69-E0085F4CDA18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "loxnetTests", "..\loxnetTests\loxnetTests.csproj", "{35CF5411-60AC-4836-A98F-80A20C29CD9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A0E7909E-B408-442D-8C69-E0085F4CDA18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0E7909E-B408-442D-8C69-E0085F4CDA18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0E7909E-B408-442D-8C69-E0085F4CDA18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35CF5411-60AC-4836-A98F-80A20C29CD9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35CF5411-60AC-4836-A98F-80A20C29CD9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35CF5411-60AC-4836-A98F-80A20C29CD9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35CF5411-60AC-4836-A98F-80A20C29CD9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
