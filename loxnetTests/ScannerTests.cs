@@ -16,10 +16,10 @@ namespace loxnetTests
         }
 
         [Test]
-        public void CanInvokeMainWithEmptyArgumentList()
+        public void CanInvokeMainWithFilePath()
         {
-            string[] args = { };
-            Assert.Throws<NotImplementedException>(() => Lox.Main(args));
+            string[] args = { @"X:\Projekte\VisualStudio\loxnet\loxnetTests\test.lox" };
+            Lox.Main(args);
         }
 
         [Test]
@@ -27,6 +27,18 @@ namespace loxnetTests
         {
             string[] args = {"", "", ""};
             Assert.Throws<ArgumentException>(() => Lox.Main(args));
+        }
+
+        [Test]
+        public void CanCreateToken()
+        {
+            Token token = new Token(TokenType.PLUS, "", "", 111);
+        }
+
+        [Test]
+        public void CanCreateScanner()
+        {
+            Scanner scanner = new Scanner("var i = 7");
         }
     }
 }
