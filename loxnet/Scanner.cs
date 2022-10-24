@@ -61,6 +61,18 @@ namespace de.softwaremess.loxnet
                 case '>':
                     AddToken(Match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
                     break;
+                case '/':
+                    if (Match('/'))
+                    {
+                        // A comment goes until the end of the line.
+                        while (Peek() != '\n' && !isAtEnd()) 
+                            Advance();
+                    }
+                    else
+                    {
+                        AddToken(TokenType.SLASH);
+                    }
+                    break;
 
                 default:
                     Lox.Error(line, "Unexpected character.");
@@ -80,6 +92,12 @@ namespace de.softwaremess.loxnet
 
             current++;
             return true;
+        }
+
+        private char Peek()
+        {
+            if (isAtEnd()) return '\0';
+            return source[current];
         }
 
         private void AddToken(TokenType type)

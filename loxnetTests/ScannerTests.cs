@@ -2,7 +2,7 @@ using de.softwaremess.loxnet;
 
 namespace loxnetTests
 {
-    public class Tests
+    public class ScannerTests
     {
         [SetUp]
         public void Setup()
@@ -80,6 +80,14 @@ namespace loxnetTests
             Assert.Contains(new Token(TokenType.RIGHT_PAREN, ")", null, 1), tokens, "Expected RIGHT_PAREN Token in line 1");
             Assert.Contains(new Token(TokenType.MINUS, "-", null, 2), tokens, "Expected MINUS Token in line 2");
            // Assert.Contains(new Token(TokenType.BANG_EQUAL, "!=", null, 2), tokens, "Expected BANG_EQUAL Token in line 2");
+        }
+
+        [Test]
+        public void IgnoresComments()
+        {
+            Scanner scanner = new Scanner("//Some comment a+1 \n a=(3==4); \n a-3!=7;");
+            var tokens = scanner.scanTokens();
+            Assert.That(tokens, Does.Not.Contain(new Token(TokenType.PLUS, "+", null, 1)));
         }
     }
 }
