@@ -74,12 +74,12 @@ namespace loxnetTests
         [Test]
         public void CanScanMultiline()
         {
-            Scanner scanner = new Scanner("a=(3==4);\na-3!=7;");
+            Scanner scanner = new Scanner("a=(3==4);\n a-3!=7;");
             var tokens = scanner.scanTokens();
             Assert.Contains(new Token(TokenType.LEFT_PAREN, "(", null, 1), tokens, "Expected LEFT_PAREN Token in line 1");
             Assert.Contains(new Token(TokenType.RIGHT_PAREN, ")", null, 1), tokens, "Expected RIGHT_PAREN Token in line 1");
             Assert.Contains(new Token(TokenType.MINUS, "-", null, 2), tokens, "Expected MINUS Token in line 2");
-           // Assert.Contains(new Token(TokenType.BANG_EQUAL, "!=", null, 2), tokens, "Expected BANG_EQUAL Token in line 2");
+            Assert.That(tokens, Does.Not.Contain(new Token(TokenType.RIGHT_PAREN, ")", null, 2)));
         }
 
         [Test]
