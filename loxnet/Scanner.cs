@@ -73,6 +73,14 @@ namespace de.softwaremess.loxnet
                         AddToken(TokenType.SLASH);
                     }
                     break;
+                case ' ':
+                case '\r':
+                case '\t':
+                    // Ignore whitespace.
+                    break;
+                case '\n':
+                    line++;
+                    break;
 
                 default:
                     Lox.Error(line, "Unexpected character.");
