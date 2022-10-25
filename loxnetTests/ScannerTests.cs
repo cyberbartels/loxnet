@@ -89,5 +89,26 @@ namespace loxnetTests
             var tokens = scanner.scanTokens();
             Assert.That(tokens, Does.Not.Contain(new Token(TokenType.PLUS, "+", null, 1)));
         }
+
+        [Test]
+        public void CanScanComplexStuff()
+        {
+            //See https://craftinginterpreters.com/scanning.html Chapter 4.6
+
+            Scanner scanner = new Scanner("// this is a comment\r\n (( )){} // grouping stuff\r\n !*+-/=<> <= == // operators");
+            var tokens = scanner.scanTokens();
+            Assert.That(tokens, Does.Not.Contain(new Token(TokenType.PLUS, "+", null, 1)));
+            Assert.Contains(new Token(TokenType.LEFT_PAREN, "(", null, 2), tokens, "Expected LEFT_PAREN Token in line 2");
+            Assert.Contains(new Token(TokenType.RIGHT_PAREN, ")", null, 2), tokens, "Expected RIGHT_PAREN Token in line 2");
+            Assert.Contains(new Token(TokenType.LEFT_BRACE, "{", null, 2), tokens, "Expected LEFT_BRACE Token in line 2");
+            Assert.Contains(new Token(TokenType.RIGHT_BRACE, ")", null, 2), tokens, "Expected RIGHT_BRACE Token in line 2");
+            Assert.Contains(new Token(TokenType.MINUS, "-", null, 3), tokens, "Expected MINUS Token in line 3");
+            Assert.Contains(new Token(TokenType.BANG, "!", null, 3), tokens, "Expected BANG Token in line 3");
+            Assert.Contains(new Token(TokenType.SLASH, "/", null, 3), tokens, "Expected SLASH Token in line 3");
+            Assert.Contains(new Token(TokenType.LESS_EQUAL, "<=", null, 3), tokens, "Expected LESS_EQUAL Token in line 3");
+            Assert.Contains(new Token(TokenType.GREATER, ">", null, 3), tokens, "Expected GREATER Token in line 3");
+            Assert.That(tokens, Does.Not.Contain(new Token(TokenType.BANG_EQUAL, "!=", null, 3)));
+            Assert.That(tokens, Does.Not.Contain(new Token(TokenType.GREATER_EQUAL, ">=", null, 3)));
+        }
     }
 }
