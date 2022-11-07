@@ -129,10 +129,6 @@ namespace loxnetTests
             string code = @"""" + literal + @"""";
             Scanner scanner = new Scanner(@"//Some comment with a ""double quoted text""" + " \n name = " + @"""" + literal + @"""");
             var tokens = scanner.scanTokens();
-            foreach (Token t in tokens)
-            {
-                Console.Out.WriteLine(t.lexeme);
-            }
             Assert.Contains(new Token(TokenType.STRING, code, literal, 2), tokens, "Expected STRING Token in line 2");
         }
 
@@ -150,6 +146,22 @@ namespace loxnetTests
             Scanner scanner = new Scanner("3.1==4\n");
             Assert.Contains(new Token(TokenType.NUMBER, "3.1", null, 1), scanner.scanTokens(), "Expected NUMBER 3.1 Token in line 1");
             Assert.Contains(new Token(TokenType.NUMBER, "4", null, 1), scanner.scanTokens(), "Expected NUMBER 4 Token in line 1");
+        }
+
+        [Test]
+        public void CanScanIdentifier()
+        {
+            Scanner scanner = new Scanner("myVar=3.1\n");
+            Assert.Contains(new Token(TokenType.IDENTIFIER, "myVar", null, 1), scanner.scanTokens(), "Expected IDENTIFIER Token in line 1");
+        }
+
+        [Test]
+        public void CanScanKeywords()
+        {
+            Scanner scanner = new Scanner("else if class\n");
+            Assert.Contains(new Token(TokenType.ELSE, "else", null, 1), scanner.scanTokens(), "Expected ELSE Token in line 1");
+            Assert.Contains(new Token(TokenType.IF, "if", null, 1), scanner.scanTokens(), "Expected IF Token in line 1");
+            Assert.Contains(new Token(TokenType.CLASS, "class", null, 1), scanner.scanTokens(), "Expected CLASS Token in line 1");
         }
     }
 }

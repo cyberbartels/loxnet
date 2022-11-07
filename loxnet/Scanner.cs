@@ -16,6 +16,27 @@ namespace de.softwaremess.loxnet
         private int current = 0;
         private int line = 1;
 
+        private static readonly Dictionary<String, TokenType> keywords = new Dictionary<String, TokenType>
+                {
+                    {"and", TokenType.AND },
+                    {"class", TokenType.CLASS },
+                    {"else", TokenType.ELSE },
+                    {"false", TokenType.FALSE },
+                    {"for", TokenType.FOR },
+                    {"fun", TokenType.FUN },
+                    {"if", TokenType.IF },
+                    {"nil", TokenType.NIL },
+                    {"or", TokenType.OR },
+                    {"print", TokenType.PRINT },
+                    {"return", TokenType.RETURN },
+                    {"super", TokenType.SUPER },
+                    {"this", TokenType.THIS },
+                    {"true", TokenType.TRUE },
+                    {"var", TokenType.VAR },
+                    {"while", TokenType.WHILE },
+
+                };
+
         public Scanner(string source)
         {
             this.source = source;
@@ -65,7 +86,7 @@ namespace de.softwaremess.loxnet
                     if (Match('/'))
                     {
                         // A comment goes until the end of the line.
-                        while (Peek() != '\n' && !isAtEnd()) 
+                        while (Peek() != '\n' && !isAtEnd())
                             Advance();
                     }
                     else
@@ -87,6 +108,10 @@ namespace de.softwaremess.loxnet
                     if (isDigit(c))
                     {
                         Number();
+                    }
+                    else if (isAlpha(c))
+                    {
+                        Identifier();
                     }
                     else
                     {
@@ -122,15 +147,16 @@ namespace de.softwaremess.loxnet
             return source[current + 1];
         }
 
-        private void StringScanner () 
+        private void StringScanner()
         {
-            while (Peek() != '"' && !isAtEnd()) 
+            while (Peek() != '"' && !isAtEnd())
             {
                 if (Peek() == '\n') line++;
                 Advance();
             }
 
-            if (isAtEnd()) {
+            if (isAtEnd())
+            {
                 Lox.Error(line, "Unterminated string.");
                 return;
             }
@@ -141,11 +167,31 @@ namespace de.softwaremess.loxnet
             // Trim the surrounding quotes.
             String value = source.Substring(start + 1, current - 1 - start - 1);
             AddToken(TokenType.STRING, value);
-         }
+        }
+
+        private void Identifier()
+        {
+            while (isAlphaNumeric(Peek())) Advance();
+            string text = source.Substring(start, current - start);
+            TokenType type = keywords.ContainsKey(text) ? keywords[text] : TokenType.IDENTIFIER; // TokenType.IDENTIFIER;
+            AddToken(type);
+        }
 
         private bool isDigit(char c)
         {
             return c >= '0' && c <= '9';
+        }
+
+        private bool isAlpha(char c)
+        {
+            return (c >= 'a' && c <= 'z') ||
+                   (c >= 'A' && c <= 'Z') ||
+                    c == '_';
+        }
+
+        private bool isAlphaNumeric(char c)
+        {
+            return isAlpha(c) || isDigit(c);
         }
 
         private void Number()
