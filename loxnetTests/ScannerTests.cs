@@ -25,7 +25,7 @@ namespace loxnetTests
         [Test]
         public void CannotInvokeMainWithToManyArguments()
         {
-            string[] args = {"", "", ""};
+            string[] args = { "", "", "" };
             Assert.Throws<ArgumentException>(() => Lox.Main(args));
         }
 
@@ -101,7 +101,7 @@ namespace loxnetTests
             Assert.Contains(new Token(TokenType.LEFT_PAREN, "(", null, 2), tokens, "Expected LEFT_PAREN Token in line 2");
             Assert.Contains(new Token(TokenType.RIGHT_PAREN, ")", null, 2), tokens, "Expected RIGHT_PAREN Token in line 2");
             Assert.Contains(new Token(TokenType.LEFT_BRACE, "{", null, 2), tokens, "Expected LEFT_BRACE Token in line 2");
-            Assert.Contains(new Token(TokenType.RIGHT_BRACE, ")", null, 2), tokens, "Expected RIGHT_BRACE Token in line 2");
+            Assert.Contains(new Token(TokenType.RIGHT_BRACE, "}", null, 2), tokens, "Expected RIGHT_BRACE Token in line 2");
             Assert.Contains(new Token(TokenType.MINUS, "-", null, 3), tokens, "Expected MINUS Token in line 3");
             Assert.Contains(new Token(TokenType.BANG, "!", null, 3), tokens, "Expected BANG Token in line 3");
             Assert.Contains(new Token(TokenType.SLASH, "/", null, 3), tokens, "Expected SLASH Token in line 3");
@@ -109,6 +109,31 @@ namespace loxnetTests
             Assert.Contains(new Token(TokenType.GREATER, ">", null, 3), tokens, "Expected GREATER Token in line 3");
             Assert.That(tokens, Does.Not.Contain(new Token(TokenType.BANG_EQUAL, "!=", null, 3)));
             Assert.That(tokens, Does.Not.Contain(new Token(TokenType.GREATER_EQUAL, ">=", null, 3)));
+        }
+
+        [Test]
+        public void CanScanString()
+        {
+            string literal = @"This is a string literal";
+            string code = @"""" + literal + @"""";
+            Scanner scanner = new Scanner(code);
+            var tokens = scanner.scanTokens();
+            StringAssert.AreEqualIgnoringCase(literal, (string) tokens[0].literal);
+            Assert.Contains(new Token(TokenType.STRING, code, literal, 1), tokens, "Expected STRING Token in line 1");
+        }
+
+        [Test]
+        public void CanScanStringinExpression()
+        {
+            string literal = @"This is another string literal";
+            string code = @"""" + literal + @"""";
+            Scanner scanner = new Scanner(@"//Some comment with a ""double quoted text""" + " \n name = " + @"""" + literal + @"""");
+            var tokens = scanner.scanTokens();
+            foreach (Token t in tokens)
+            {
+                Console.Out.WriteLine(t.lexeme);
+            }
+            Assert.Contains(new Token(TokenType.STRING, code, literal, 2), tokens, "Expected STRING Token in line 2");
         }
     }
 }
