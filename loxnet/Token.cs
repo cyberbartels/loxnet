@@ -11,8 +11,8 @@ namespace de.softwaremess.loxnet
     {
 
         readonly TokenType type;
-        readonly string lexeme;
-        readonly Object literal;
+        public readonly string lexeme;
+       public readonly Object literal;
         readonly int line;
 
         public Token(TokenType type, string lexeme, Object literal, int line)
@@ -38,7 +38,7 @@ namespace de.softwaremess.loxnet
             else
             {
                 Token t = (Token)obj;
-                return (type == t.type) && (line == t.line);
+                return (type == t.type) && (line == t.line) && (lexeme == t.lexeme);
             }
         }
 

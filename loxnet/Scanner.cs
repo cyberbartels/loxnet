@@ -81,6 +81,7 @@ namespace de.softwaremess.loxnet
                 case '\n':
                     line++;
                     break;
+                case '"': StringScanner(); break;
 
                 default:
                     Lox.Error(line, "Unexpected character.");
@@ -107,6 +108,28 @@ namespace de.softwaremess.loxnet
             if (isAtEnd()) return '\0';
             return source[current];
         }
+
+        private void StringScanner () 
+        {
+            while (Peek() != '"' && !isAtEnd()) 
+            {
+                if (Peek() == '\n') line++;
+                Advance();
+            }
+
+            if (isAtEnd()) {
+                Lox.Error(line, "Unterminated string.");
+                return;
+            }
+
+            // The closing ".
+            Advance();
+
+            // Trim the surrounding quotes.
+            String value = source.Substring(start + 1, current - 1 - start - 1);
+            AddToken(TokenType.STRING, value);
+         }
+
 
         private void AddToken(TokenType type)
         {
