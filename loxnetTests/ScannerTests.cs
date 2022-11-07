@@ -135,5 +135,21 @@ namespace loxnetTests
             }
             Assert.Contains(new Token(TokenType.STRING, code, literal, 2), tokens, "Expected STRING Token in line 2");
         }
+
+        [Test]
+        public void CanScanNUMBER()
+        {
+            Scanner scanner = new Scanner("3==4\n");
+            Assert.Contains(new Token(TokenType.NUMBER, "3", null, 1), scanner.scanTokens(), "Expected NUMBER 3 Token in line 1");
+            Assert.Contains(new Token(TokenType.NUMBER, "4", null, 1), scanner.scanTokens(), "Expected NUMBER 4 Token in line 1");
+        }
+
+        [Test]
+        public void CanScanFractionalNumber ()
+        {
+            Scanner scanner = new Scanner("3.1==4\n");
+            Assert.Contains(new Token(TokenType.NUMBER, "3.1", null, 1), scanner.scanTokens(), "Expected NUMBER 3.1 Token in line 1");
+            Assert.Contains(new Token(TokenType.NUMBER, "4", null, 1), scanner.scanTokens(), "Expected NUMBER 4 Token in line 1");
+        }
     }
 }

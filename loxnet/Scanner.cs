@@ -84,7 +84,14 @@ namespace de.softwaremess.loxnet
                 case '"': StringScanner(); break;
 
                 default:
-                    Lox.Error(line, "Unexpected character.");
+                    if (isDigit(c))
+                    {
+                        Number();
+                    }
+                    else
+                    {
+                        Lox.Error(line, "Unexpected character.");
+                    }
                     break;
             }
         }
@@ -109,6 +116,12 @@ namespace de.softwaremess.loxnet
             return source[current];
         }
 
+        private char PeekNext()
+        {
+            if (current + 1 >= source.Length) return '\0';
+            return source[current + 1];
+        }
+
         private void StringScanner () 
         {
             while (Peek() != '"' && !isAtEnd()) 
@@ -129,6 +142,27 @@ namespace de.softwaremess.loxnet
             String value = source.Substring(start + 1, current - 1 - start - 1);
             AddToken(TokenType.STRING, value);
          }
+
+        private bool isDigit(char c)
+        {
+            return c >= '0' && c <= '9';
+        }
+
+        private void Number()
+        {
+            while (isDigit(Peek())) Advance();
+
+            // Look for a fractional part.
+            if (Peek() == '.' && isDigit(PeekNext()))
+            {
+                // Consume the "."
+                Advance();
+
+                while (isDigit(Peek())) Advance();
+            }
+
+            AddToken(TokenType.NUMBER, Double.Parse(source.Substring(start, current - start)));
+        }
 
 
         private void AddToken(TokenType type)
