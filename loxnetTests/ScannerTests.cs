@@ -1,6 +1,6 @@
 using de.softwaremess.loxnet;
 
-namespace loxnetTests
+namespace de.softwaremess.loxnetTests
 {
     public class ScannerTests
     {
