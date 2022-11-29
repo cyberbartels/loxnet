@@ -80,7 +80,7 @@ namespace de.softwaremess.loxnet.tool
             writer.WriteLine("      {");
 
             // Constructor.
-            writer.WriteLine("          " + className + "(" + fieldList + ")"); 
+            writer.WriteLine("          public " + className + "(" + fieldList + ")"); 
             writer.WriteLine("          {");
 
             // Store parameters in fields.
