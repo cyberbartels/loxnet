@@ -14,7 +14,7 @@ namespace de.softwaremess.loxnet
       }
       public class Binary : Expr
       {
-          Binary(Expr left, Token op, Expr right)
+          public Binary(Expr left, Token op, Expr right)
           {
               this.left = left;
               this.op = op;
@@ -26,13 +26,13 @@ namespace de.softwaremess.loxnet
               return visitor.VisitBinaryExpr(this);
           }
 
-          readonly Expr left;
-          readonly Token op;
-          readonly Expr right;
+          public readonly Expr left;
+          public readonly Token op;
+          public readonly Expr right;
       }
       public class Grouping : Expr
       {
-          Grouping(Expr expression)
+          public Grouping(Expr expression)
           {
               this.expression = expression;
           }
@@ -42,11 +42,11 @@ namespace de.softwaremess.loxnet
               return visitor.VisitGroupingExpr(this);
           }
 
-          readonly Expr expression;
+          public readonly Expr expression;
       }
       public class Literal : Expr
       {
-          Literal(Object value)
+          public Literal(Object value)
           {
               this.value = value;
           }
@@ -56,11 +56,11 @@ namespace de.softwaremess.loxnet
               return visitor.VisitLiteralExpr(this);
           }
 
-          readonly Object value;
+          public readonly Object value;
       }
       public class Unary : Expr
       {
-          Unary(Token op, Expr right)
+          public Unary(Token op, Expr right)
           {
               this.op = op;
               this.right = right;
@@ -71,8 +71,8 @@ namespace de.softwaremess.loxnet
               return visitor.VisitUnaryExpr(this);
           }
 
-          readonly Token op;
-          readonly Expr right;
+          public readonly Token op;
+          public readonly Expr right;
       }
 
       public abstract R Accept<R>(IVisitor<R> visitor);
