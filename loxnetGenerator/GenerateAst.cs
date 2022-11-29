@@ -104,7 +104,7 @@ namespace de.softwaremess.loxnet.tool
             writer.WriteLine();
             foreach (string field in fields)
             {
-                writer.WriteLine("          readonly " + field + ";");
+                writer.WriteLine("          public readonly " + field + ";");
             }
 
             writer.WriteLine("      }");
