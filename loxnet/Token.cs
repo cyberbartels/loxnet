@@ -12,10 +12,10 @@ namespace de.softwaremess.loxnet
 
         readonly TokenType type;
         public readonly string lexeme;
-       public readonly Object literal;
+        public readonly object literal;
         readonly int line;
 
-        public Token(TokenType type, string lexeme, Object literal, int line)
+        public Token(TokenType type, string lexeme, object literal, int line)
         {
             this.type = type;
             this.lexeme = lexeme;
