@@ -10,26 +10,6 @@ namespace de.softwaremess.loxnetTests
         }
 
         [Test]
-        public void CanCreateLoxClass()
-        {
-            Lox lox = new Lox();
-        }
-
-        [Test]
-        public void CanInvokeMainWithFilePath()
-        {
-            string[] args = { @"X:\Projekte\VisualStudio\loxnet\loxnetTests\test.lox" };
-            Lox.Main(args);
-        }
-
-        [Test]
-        public void CannotInvokeMainWithToManyArguments()
-        {
-            string[] args = { "", "", "" };
-            Assert.Throws<ArgumentException>(() => Lox.Main(args));
-        }
-
-        [Test]
         public void CanCreateToken()
         {
             Token token = new Token(TokenType.PLUS, "", "", 111);
