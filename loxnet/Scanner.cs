@@ -216,7 +216,7 @@ namespace de.softwaremess.loxnet
             AddToken(type, null);
         }
 
-        private void AddToken(TokenType type, Object literal)
+        private void AddToken(TokenType type, object literal)
         {
             String text = source.Substring(start, current - start);
             tokens.Add(new Token(type, text, literal, line));
