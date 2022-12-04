@@ -113,6 +113,10 @@ namespace de.softwaremess.loxnet
                     {
                         Identifier();
                     }
+                    else if(isBOM(c))
+                    {
+                        //Skip
+                    }
                     else
                     {
                         Lox.Error(line, "Unexpected character.");
@@ -187,6 +191,11 @@ namespace de.softwaremess.loxnet
             return (c >= 'a' && c <= 'z') ||
                    (c >= 'A' && c <= 'Z') ||
                     c == '_';
+        }
+
+        private bool isBOM(char c)
+        {
+            return (c == 65279);
         }
 
         private bool isAlphaNumeric(char c)
