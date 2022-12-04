@@ -10,10 +10,10 @@ namespace de.softwaremess.loxnet
     public class Token
     {
 
-        readonly TokenType type;
+        public readonly TokenType type;
         public readonly string lexeme;
         public readonly object literal;
-        readonly int line;
+        public readonly int line;
 
         public Token(TokenType type, string lexeme, object literal, int line)
         {
