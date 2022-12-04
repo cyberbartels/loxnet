@@ -10,9 +10,10 @@ namespace de.softwaremess.loxnetTests
         }
 
         [Test]
-        public void CanCreateParserClass()
+        public void CanCreateParserWithTokenList()
         {
-            Parser parser = new Parser();
+            Scanner scanner = new Scanner("a=(3==4);\n");
+            Parser parser = new Parser(scanner.scanTokens());
         }
     }
 }
