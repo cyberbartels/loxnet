@@ -44,11 +44,19 @@ namespace de.softwaremess.loxnet
             Scanner scanner = new Scanner(source);
             List<Token> tokens = scanner.scanTokens();
 
-            // For now, just print the tokens.
-            foreach (Token token in tokens)
-            {
-                Console.WriteLine(token);
-            }
+            Parser parser = new Parser(tokens);
+            Expr expression = parser.Parse();
+
+            // Stop if there was a syntax error.
+            if (hadError) return;
+
+            Console.WriteLine(new ASTPrinter().Print(expression));
+
+            //// For now, just print the tokens.
+            //foreach (Token token in tokens)
+            //{
+            //    Console.WriteLine(token);
+            //}
         }
 
         private static void RunPrompt()
@@ -72,6 +80,18 @@ namespace de.softwaremess.loxnet
         {
             Console.Error.WriteLine("[line " + line + "] Error" + where + ": " + message);
             hadError = true;
+        }
+
+        public static void Error(Token token, string message)
+        {
+            if (token.  type == TokenType.EOF)
+            {
+                Report(token.line, " at end", message);
+            }
+            else
+            {
+                Report(token.line, " at '" + token.lexeme + "'", message);
+            }
         }
 
     }
