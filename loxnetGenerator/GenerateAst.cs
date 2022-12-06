@@ -23,6 +23,9 @@ namespace de.softwaremess.loxnet.tool
                                                    "Literal  : Object value",
                                                    "Unary    : Token op, Expr right" };
             DefineAst(outputDir, "Expr", new List<string>(expressionTypes));
+
+            string[] statementTypes = { "Expression : Expr expression", "Print      : Expr expression" };
+            DefineAst(outputDir, "Stmt", new List<string>(statementTypes));
         }
 
         private static void DefineAst(String outputDir, String baseName, List<String> types)
