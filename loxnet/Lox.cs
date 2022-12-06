@@ -11,7 +11,9 @@ namespace de.softwaremess.loxnet
 {
     public class Lox
     {
+        private static readonly Interpreter interpreter = new Interpreter();
         private static bool hadError;
+        private static bool hadRuntimeError = false;
 
         public static void Main(string[] args)
         {
@@ -26,7 +28,7 @@ namespace de.softwaremess.loxnet
             }
             else
             {
-                throw new NotImplementedException("");
+                RunPrompt(); // throw new NotImplementedException("");
             }
 
         }
@@ -37,6 +39,7 @@ namespace de.softwaremess.loxnet
             Run(Encoding.Default.GetString(bytes));
             // Indicate an error in the exit code.
             if (hadError) Environment.Exit(65);
+            if (hadRuntimeError) Environment.Exit(70);
         }
 
         private static void Run(string source)
@@ -51,6 +54,8 @@ namespace de.softwaremess.loxnet
             if (hadError) return;
 
             Console.WriteLine(new ASTPrinter().Print(expression));
+
+            interpreter.Interpret(expression);
 
             //// For now, just print the tokens.
             //foreach (Token token in tokens)
@@ -92,6 +97,12 @@ namespace de.softwaremess.loxnet
             {
                 Report(token.line, " at '" + token.lexeme + "'", message);
             }
+        }
+
+        public static void RuntimeError(RuntimeError error)
+        {
+            Console.Error.WriteLine(error.Message + "\n[line " + error.token.line + "]");
+            hadRuntimeError = true;
         }
 
     }
