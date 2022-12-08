@@ -19,12 +19,14 @@ namespace de.softwaremess.loxnet.tool
             }
             string outputDir = args[0];
             string[] expressionTypes = { "Binary   : Expr left, Token op, Expr right",
-                                                   "Grouping : Expr expression",
-                                                   "Literal  : Object value",
-                                                   "Unary    : Token op, Expr right" };
+                                         "Grouping : Expr expression",
+                                         "Literal  : Object value",
+                                         "Unary    : Token op, Expr right" };
             DefineAst(outputDir, "Expr", new List<string>(expressionTypes));
 
-            string[] statementTypes = { "Expression : Expr expression", "Print      : Expr expression" };
+            string[] statementTypes = { "Expression : Expr expression", 
+                                        "Print      : Expr expression",
+                                        "Var        : Token name, Expr initializer"};
             DefineAst(outputDir, "Stmt", new List<string>(statementTypes));
         }
 
