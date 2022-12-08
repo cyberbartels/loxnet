@@ -11,6 +11,7 @@ namespace de.softwaremess.loxnet
           R VisitGroupingExpr(Grouping expr);
           R VisitLiteralExpr(Literal expr);
           R VisitUnaryExpr(Unary expr);
+          R VisitVariableExpr(Variable expr);
       }
       public class Binary : Expr
       {
@@ -73,6 +74,20 @@ namespace de.softwaremess.loxnet
 
           public readonly Token op;
           public readonly Expr right;
+      }
+      public class Variable : Expr
+      {
+          public Variable(Token name)
+          {
+              this.name = name;
+          }
+
+          public override R Accept<R>(IVisitor<R> visitor)
+          {
+              return visitor.VisitVariableExpr(this);
+          }
+
+          public readonly Token name;
       }
 
       public abstract R Accept<R>(IVisitor<R> visitor);
