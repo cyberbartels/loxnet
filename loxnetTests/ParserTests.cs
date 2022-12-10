@@ -56,5 +56,25 @@ namespace de.softwaremess.loxnetTests
             Assert.That(((Expr.Literal)((Expr.Binary)((Stmt.Expression)stmts[0]).expression).right).value, Is.EqualTo(true));
 
         }
+
+        [Test]
+        public void CanParsePrintStatement()
+        {
+            Scanner scanner = new Scanner("print (4==5)==true;\n");
+            Parser parser = new Parser(scanner.scanTokens());
+            List<Stmt> stmts = parser.Parse();
+
+            Assert.That((stmts[0]), Is.InstanceOf(typeof(Stmt.Print)));
+        }
+
+        [Test]
+        public void CanParseVarStatement()
+        {
+            Scanner scanner = new Scanner("var a = 1;\n");
+            Parser parser = new Parser(scanner.scanTokens());
+            List<Stmt> stmts = parser.Parse();
+
+            Assert.That((stmts[0]), Is.InstanceOf(typeof(Stmt.Var)));
+        }
     }
 }
