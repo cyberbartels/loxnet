@@ -8,6 +8,8 @@ namespace de.softwaremess.loxnet
 {
     public class Interpreter : Expr.IVisitor<object>, Stmt.IVisitor<object>
     {
+        private VarEnvironment environment = new VarEnvironment();
+
         public void Interpret(List<Stmt> statements)
         {
             try
@@ -93,6 +95,23 @@ namespace de.softwaremess.loxnet
             }
 
             // Unreachable.
+            return null;
+        }
+
+        public object VisitVariableExpr(Expr.Variable expr)
+        {
+            return environment.Get(expr.name);
+        }
+
+        public object VisitVarStmt(Stmt.Var stmt)
+        {
+            object value = null;
+            if (stmt.initializer != null)
+            {
+                value = Evaluate(stmt.initializer);
+            }
+
+            environment.Define(stmt.name.lexeme, value);
             return null;
         }
 
