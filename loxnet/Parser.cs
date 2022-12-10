@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static de.softwaremess.loxnet.Expr;
 using static de.softwaremess.loxnet.Stmt;
 
 namespace de.softwaremess.loxnet
@@ -84,7 +85,27 @@ namespace de.softwaremess.loxnet
 
         private Expr Expression()
         {
-            return Equality();
+            return Assignment();
+        }
+
+        private Expr Assignment()
+        {
+            Expr expr = Assignment();
+
+            if (Match(TokenType.EQUAL))
+            {
+                Token equals = Previous();
+                Expr value = Assignment();
+
+                if (typeof(Expr.Variable).IsInstanceOfType(expr)) {
+                    Token name = ((Expr.Variable)expr).name;
+                    return new Expr.Assign(name, value);
+                }
+
+                Error(equals, "Invalid assignment target.");
+            }
+
+            return expr;
         }
 
         private Expr Equality()

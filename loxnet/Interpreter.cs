@@ -98,6 +98,13 @@ namespace de.softwaremess.loxnet
             return null;
         }
 
+        public object VisitAssignExpr(Expr.Assign expr)
+        {
+            object value = Evaluate(expr.value);
+            environment.Assign(expr.name, value);
+            return value;
+        }
+
         public object VisitVariableExpr(Expr.Variable expr)
         {
             return environment.Get(expr.name);

@@ -24,5 +24,16 @@ namespace de.softwaremess.loxnet
 
             throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
         }
+
+        public void Assign(Token name, object value)
+        {
+            if (values.ContainsKey(name.lexeme))
+            {
+                values[name.lexeme] = value;
+                return;
+            }
+
+            throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
+        }
     }
 }
