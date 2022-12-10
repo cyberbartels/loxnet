@@ -90,7 +90,7 @@ namespace de.softwaremess.loxnet
 
         private Expr Assignment()
         {
-            Expr expr = Assignment();
+            Expr expr = Equality();
 
             if (Match(TokenType.EQUAL))
             {
