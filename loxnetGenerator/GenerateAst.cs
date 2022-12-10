@@ -18,7 +18,8 @@ namespace de.softwaremess.loxnet.tool
                 Environment.Exit(64);
             }
             string outputDir = args[0];
-            string[] expressionTypes = { "Binary   : Expr left, Token op, Expr right",
+            string[] expressionTypes = { "Assign   : Token name, Expr value",
+                                         "Binary   : Expr left, Token op, Expr right",
                                          "Grouping : Expr expression",
                                          "Literal  : Object value",
                                          "Unary    : Token op, Expr right",
