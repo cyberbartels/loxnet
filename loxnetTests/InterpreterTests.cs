@@ -18,27 +18,27 @@ namespace de.softwaremess.loxnetTests
         [Test]
         public void CanInterpretNil()
         {
-            Scanner scanner = new Scanner("nil");
+            Scanner scanner = new Scanner("nil;");
             List<Token> tokens = scanner.scanTokens();
 
             Parser parser = new Parser(tokens);
-            Expr expression = parser.Parse();
+            List<Stmt> stmts = parser.Parse();
 
             Interpreter interpreter = new Interpreter();
-            interpreter.Interpret(expression);
+            interpreter.Interpret(stmts);
         }
 
         [Test]
         public void CanInterpretSimpleExpression()
         {
-            Scanner scanner = new Scanner("(3+4)==7");
+            Scanner scanner = new Scanner("(3+4)==7;");
             List<Token> tokens = scanner.scanTokens();
 
             Parser parser = new Parser(tokens);
-            Expr expression = parser.Parse();
+            List<Stmt> stmts = parser.Parse();
 
             Interpreter interpreter = new Interpreter();
-            interpreter.Interpret(expression);
+            interpreter.Interpret(stmts);
         }
 
     }
