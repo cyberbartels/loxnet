@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace de.softwaremess.loxnet
 {
-    public class Environment
+    public class VarEnvironment
     {
         private readonly Dictionary<string, object> values = new Dictionary<string, object>();
 
