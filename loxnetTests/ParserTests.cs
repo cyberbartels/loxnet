@@ -13,14 +13,14 @@ namespace de.softwaremess.loxnetTests
         public void CanCreateParserWithTokenList()
         {
             Scanner scanner = new Scanner("a=(3==4);\n");
-            Parser parser = new Parser(scanner.scanTokens());
+            Parser parser = new Parser(scanner.ScanTokens());
         }
 
         [Test]
         public void CanParseUnaryExpression()
         {
             Scanner scanner = new Scanner("-3;\n");
-            Parser parser = new Parser(scanner.scanTokens());
+            Parser parser = new Parser(scanner.ScanTokens());
             List<Stmt> stmts = parser.Parse();
 
             Assert.That(((Stmt.Expression)stmts[0]).expression, Is.InstanceOf(typeof(Expr.Unary)));
@@ -32,7 +32,7 @@ namespace de.softwaremess.loxnetTests
         public void CanParseBinaryExpression()
         {
             Scanner scanner = new Scanner("5+4;\n");
-            Parser parser = new Parser(scanner.scanTokens());
+            Parser parser = new Parser(scanner.ScanTokens());
             List<Stmt> stmts = parser.Parse();
 
             Assert.That(((Stmt.Expression)stmts[0]).expression, Is.InstanceOf(typeof(Expr.Binary)));
@@ -45,7 +45,7 @@ namespace de.softwaremess.loxnetTests
         public void CanParseGroupingExpression()
         {
             Scanner scanner = new Scanner("(4==5)==true;\n");
-            Parser parser = new Parser(scanner.scanTokens());
+            Parser parser = new Parser(scanner.ScanTokens());
             List<Stmt> stmts = parser.Parse();
 
             Assert.That(((Stmt.Expression)stmts[0]).expression, Is.InstanceOf(typeof(Expr.Binary)));
@@ -61,7 +61,7 @@ namespace de.softwaremess.loxnetTests
         public void CanParsePrintStatement()
         {
             Scanner scanner = new Scanner("print (4==5)==true;\n");
-            Parser parser = new Parser(scanner.scanTokens());
+            Parser parser = new Parser(scanner.ScanTokens());
             List<Stmt> stmts = parser.Parse();
 
             Assert.That((stmts[0]), Is.InstanceOf(typeof(Stmt.Print)));
@@ -71,7 +71,7 @@ namespace de.softwaremess.loxnetTests
         public void CanParseVarStatement()
         {
             Scanner scanner = new Scanner("var a = 1;\n");
-            Parser parser = new Parser(scanner.scanTokens());
+            Parser parser = new Parser(scanner.ScanTokens());
             List<Stmt> stmts = parser.Parse();
 
             Assert.That((stmts[0]), Is.InstanceOf(typeof(Stmt.Var)));

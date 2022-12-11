@@ -132,7 +132,7 @@ namespace de.softwaremess.loxnet
         public object VisitPrintStmt(Stmt.Print stmt)
         {
             object value = Evaluate(stmt.expression);
-            Console.WriteLine(stringify(value));
+            Console.WriteLine(Stringify(value));
             return null;
         }
 
@@ -198,7 +198,7 @@ namespace de.softwaremess.loxnet
             return a.Equals(b);
         }
 
-        private string stringify(object obj)
+        private string Stringify(object obj)
         {
             if (obj == null) return "nil";
 

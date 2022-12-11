@@ -25,7 +25,7 @@ namespace de.softwaremess.loxnet
         public List<Stmt> Parse()
         {
             List<Stmt> statements = new List<Stmt>();
-            while (!isAtEnd())
+            while (!IsAtEnd())
             {
                 statements.Add(Declaration());
             }
@@ -67,7 +67,7 @@ namespace de.softwaremess.loxnet
         {
             List<Stmt> statements = new List<Stmt>();
 
-            while (!Check(TokenType.RIGHT_BRACE) && !isAtEnd())
+            while (!Check(TokenType.RIGHT_BRACE) && !IsAtEnd())
             {
                 statements.Add(Declaration());
             }
@@ -239,17 +239,17 @@ namespace de.softwaremess.loxnet
 
         private bool Check(TokenType type)
         {
-            if (isAtEnd()) return false;
+            if (IsAtEnd()) return false;
             return Peek().type == type;
         }
 
         private Token Advance()
         {
-            if (!isAtEnd()) current++;
+            if (!IsAtEnd()) current++;
             return Previous();
         }
 
-        private bool isAtEnd()
+        private bool IsAtEnd()
         {
             return Peek().type == TokenType.EOF;
         }
@@ -274,7 +274,7 @@ namespace de.softwaremess.loxnet
         {
             Advance();
 
-            while (!isAtEnd())
+            while (!IsAtEnd())
             {
                 if (Previous().type == TokenType.SEMICOLON) return;
 

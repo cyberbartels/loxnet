@@ -45,7 +45,7 @@ namespace de.softwaremess.loxnet
         private static void Run(string source)
         {
             Scanner scanner = new Scanner(source);
-            List<Token> tokens = scanner.scanTokens();
+            List<Token> tokens = scanner.ScanTokens();
 
             Parser parser = new Parser(tokens);
             List<Stmt> statements = parser.Parse();
