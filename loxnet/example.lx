@@ -1,0 +1,11 @@
+﻿var a = false;
+print a;
+
+if(a)
+{
+	print "yes!";
+}
+else
+{
+	print "no!";
+}
