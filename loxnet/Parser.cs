@@ -51,6 +51,7 @@ namespace de.softwaremess.loxnet
         private Stmt Statement()
         {
             if (Match(TokenType.PRINT)) return PrintStatement();
+            if (Match(TokenType.LEFT_BRACE)) return new Stmt.Block(Block());
 
             return ExpressionStatement();
         }
@@ -60,6 +61,19 @@ namespace de.softwaremess.loxnet
             Expr value = Expression();
             Consume(TokenType.SEMICOLON, "Expect ';' after value.");
             return new Stmt.Print(value);
+        }
+
+        private List<Stmt> Block()
+        {
+            List<Stmt> statements = new List<Stmt>();
+
+            while (!Check(TokenType.RIGHT_BRACE) && !isAtEnd())
+            {
+                statements.Add(Declaration());
+            }
+
+            Consume(TokenType.RIGHT_BRACE, "Expect '}' after block.");
+            return statements;
         }
 
         private Stmt VarDeclaration()
