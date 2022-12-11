@@ -8,7 +8,18 @@ namespace de.softwaremess.loxnet
 {
     public class VarEnvironment
     {
+        private readonly VarEnvironment enclosing;
         private readonly Dictionary<string, object> values = new Dictionary<string, object>();
+
+        public VarEnvironment()
+        {
+            enclosing = null;
+        }
+
+        public VarEnvironment(VarEnvironment enclosing)
+        {
+            this.enclosing = enclosing;
+        }
 
         public void Define(string name, object value)
         {
@@ -22,6 +33,8 @@ namespace de.softwaremess.loxnet
                 return values[name.lexeme];
             }
 
+            if (enclosing != null) return enclosing.Get(name);
+
             throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
         }
 
@@ -30,6 +43,12 @@ namespace de.softwaremess.loxnet
             if (values.ContainsKey(name.lexeme))
             {
                 values[name.lexeme] = value;
+                return;
+            }
+
+            if (enclosing != null)
+            {
+                enclosing.Assign(name, value);
                 return;
             }
 
