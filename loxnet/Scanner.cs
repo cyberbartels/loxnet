@@ -42,20 +42,20 @@ namespace de.softwaremess.loxnet
             this.source = source;
         }
 
-        public List<Token> scanTokens()
+        public List<Token> ScanTokens()
         {
-            while (!isAtEnd())
+            while (!IsAtEnd())
             {
                 // We are at the beginning of the next lexeme.
                 start = current;
-                scanToken();
+                ScanToken();
             }
 
             tokens.Add(new Token(TokenType.EOF, "", null, line));
             return tokens;
         }
 
-        private void scanToken()
+        private void ScanToken()
         {
             char c = Advance();
             switch (c)
@@ -86,7 +86,7 @@ namespace de.softwaremess.loxnet
                     if (Match('/'))
                     {
                         // A comment goes until the end of the line.
-                        while (Peek() != '\n' && !isAtEnd())
+                        while (Peek() != '\n' && !IsAtEnd())
                             Advance();
                     }
                     else
@@ -105,15 +105,15 @@ namespace de.softwaremess.loxnet
                 case '"': StringScanner(); break;
 
                 default:
-                    if (isDigit(c))
+                    if (IsDigit(c))
                     {
                         Number();
                     }
-                    else if (isAlpha(c))
+                    else if (IsAlpha(c))
                     {
                         Identifier();
                     }
-                    else if(isBOM(c))
+                    else if(IsBOM(c))
                     {
                         //Skip
                     }
@@ -132,7 +132,7 @@ namespace de.softwaremess.loxnet
 
         private bool Match(char expected)
         {
-            if (isAtEnd()) return false;
+            if (IsAtEnd()) return false;
             if (source[current] != expected) return false;
 
             current++;
@@ -141,7 +141,7 @@ namespace de.softwaremess.loxnet
 
         private char Peek()
         {
-            if (isAtEnd()) return '\0';
+            if (IsAtEnd()) return '\0';
             return source[current];
         }
 
@@ -153,13 +153,13 @@ namespace de.softwaremess.loxnet
 
         private void StringScanner()
         {
-            while (Peek() != '"' && !isAtEnd())
+            while (Peek() != '"' && !IsAtEnd())
             {
                 if (Peek() == '\n') line++;
                 Advance();
             }
 
-            if (isAtEnd())
+            if (IsAtEnd())
             {
                 Lox.Error(line, "Unterminated string.");
                 return;
@@ -175,45 +175,45 @@ namespace de.softwaremess.loxnet
 
         private void Identifier()
         {
-            while (isAlphaNumeric(Peek())) Advance();
+            while (IsAlphaNumeric(Peek())) Advance();
             string text = source.Substring(start, current - start);
             TokenType type = keywords.ContainsKey(text) ? keywords[text] : TokenType.IDENTIFIER; // TokenType.IDENTIFIER;
             AddToken(type);
         }
 
-        private bool isDigit(char c)
+        private bool IsDigit(char c)
         {
             return c >= '0' && c <= '9';
         }
 
-        private bool isAlpha(char c)
+        private bool IsAlpha(char c)
         {
             return (c >= 'a' && c <= 'z') ||
                    (c >= 'A' && c <= 'Z') ||
                     c == '_';
         }
 
-        private bool isBOM(char c)
+        private bool IsBOM(char c)
         {
             return (c == 65279);
         }
 
-        private bool isAlphaNumeric(char c)
+        private bool IsAlphaNumeric(char c)
         {
-            return isAlpha(c) || isDigit(c);
+            return IsAlpha(c) || IsDigit(c);
         }
 
         private void Number()
         {
-            while (isDigit(Peek())) Advance();
+            while (IsDigit(Peek())) Advance();
 
             // Look for a fractional part.
-            if (Peek() == '.' && isDigit(PeekNext()))
+            if (Peek() == '.' && IsDigit(PeekNext()))
             {
                 // Consume the "."
                 Advance();
 
-                while (isDigit(Peek())) Advance();
+                while (IsDigit(Peek())) Advance();
             }
 
             AddToken(TokenType.NUMBER, Double.Parse(source.Substring(start, current - start)));
@@ -231,7 +231,7 @@ namespace de.softwaremess.loxnet
             tokens.Add(new Token(type, text, literal, line));
         }
 
-        private bool isAtEnd()
+        private bool IsAtEnd()
         {
             return current >= source.Length;
         }

@@ -19,7 +19,7 @@ namespace de.softwaremess.loxnetTests
         public void CanInterpretNil()
         {
             Scanner scanner = new Scanner("nil;");
-            List<Token> tokens = scanner.scanTokens();
+            List<Token> tokens = scanner.ScanTokens();
 
             Parser parser = new Parser(tokens);
             List<Stmt> stmts = parser.Parse();
@@ -32,7 +32,7 @@ namespace de.softwaremess.loxnetTests
         public void CanInterpretSimpleExpression()
         {
             Scanner scanner = new Scanner("(3+4)==7;");
-            List<Token> tokens = scanner.scanTokens();
+            List<Token> tokens = scanner.ScanTokens();
 
             Parser parser = new Parser(tokens);
             List<Stmt> stmts = parser.Parse();
