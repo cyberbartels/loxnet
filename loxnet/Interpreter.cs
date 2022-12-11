@@ -126,7 +126,19 @@ namespace de.softwaremess.loxnet
         {
             Evaluate(stmt.expression);
             return null;
-            
+        }
+
+        public object VisitIfStmt(Stmt.If stmt)
+        {
+            if (IsTruthy(Evaluate(stmt.condition)))
+            {
+                Execute(stmt.thenBranch);
+            }
+            else if (stmt.elseBranch != null)
+            {
+                Execute(stmt.elseBranch);
+            }
+            return null;
         }
 
         public object VisitPrintStmt(Stmt.Print stmt)
