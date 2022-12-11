@@ -136,6 +136,12 @@ namespace de.softwaremess.loxnet
             return null;
         }
 
+        public object VisitBlockStmt(Stmt.Block stmt)
+        {
+            ExecuteBlock(stmt.statements, new VarEnvironment(environment));
+            return null;
+        }
+
         private object Evaluate(Expr expr)
         {
             return expr.Accept(this);
@@ -144,6 +150,24 @@ namespace de.softwaremess.loxnet
         private void Execute(Stmt stmt)
         {
             stmt.Accept(this);
+        }
+
+        void ExecuteBlock(List<Stmt> statements, VarEnvironment environment)
+        {
+            VarEnvironment previous = this.environment;
+            try
+            {
+                this.environment = environment;
+
+                foreach (Stmt statement in statements)
+                {
+                    Execute(statement);
+                }
+            }
+            finally
+            {
+                this.environment = previous;
+            }
         }
 
         private void CheckNumberOperand(Token op, object operand)
