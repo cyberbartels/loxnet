@@ -27,7 +27,9 @@ namespace de.softwaremess.loxnet.tool
             DefineAst(outputDir, "Expr", new List<string>(expressionTypes));
 
             string[] statementTypes = { "Block      : List<Stmt> statements",
-                                        "Expression : Expr expression", 
+                                        "Expression : Expr expression",
+                                        "If         : Expr condition, Stmt thenBranch," +
+                                                    " Stmt elseBranch",
                                         "Print      : Expr expression",
                                         "Var        : Token name, Expr initializer"};
             DefineAst(outputDir, "Stmt", new List<string>(statementTypes));

@@ -9,6 +9,7 @@ namespace de.softwaremess.loxnet
       {
           R VisitBlockStmt(Block stmt);
           R VisitExpressionStmt(Expression stmt);
+          R VisitIfStmt(If stmt);
           R VisitPrintStmt(Print stmt);
           R VisitVarStmt(Var stmt);
       }
@@ -39,6 +40,24 @@ namespace de.softwaremess.loxnet
           }
 
           public readonly Expr expression;
+      }
+      public class If : Stmt
+      {
+          public If(Expr condition, Stmt thenBranch, Stmt elseBranch)
+          {
+              this.condition = condition;
+              this.thenBranch = thenBranch;
+              this.elseBranch = elseBranch;
+          }
+
+          public override R Accept<R>(IVisitor<R> visitor)
+          {
+              return visitor.VisitIfStmt(this);
+          }
+
+          public readonly Expr condition;
+          public readonly Stmt thenBranch;
+          public readonly Stmt elseBranch;
       }
       public class Print : Stmt
       {
