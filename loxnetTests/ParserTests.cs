@@ -21,11 +21,11 @@ namespace de.softwaremess.loxnetTests
         {
             Scanner scanner = new Scanner("-3;\n");
             Parser parser = new Parser(scanner.scanTokens());
-            Expr expr = parser.Parse();
+            List<Stmt> stmts = parser.Parse();
 
-            Assert.That(expr, Is.InstanceOf(typeof(Expr.Unary)));
-            Assert.That(((Expr.Unary)expr).right, Is.InstanceOf(typeof(Expr.Literal)));
-            Assert.That(((Expr.Literal)((Expr.Unary)expr).right).value, Is.EqualTo(3));
+            Assert.That(((Stmt.Expression)stmts[0]).expression, Is.InstanceOf(typeof(Expr.Unary)));
+            Assert.That(((Expr.Unary)((Stmt.Expression)stmts[0]).expression).right, Is.InstanceOf(typeof(Expr.Literal)));
+            Assert.That(((Expr.Literal)((Expr.Unary)((Stmt.Expression)stmts[0]).expression).right).value, Is.EqualTo(3));
         }
 
         [Test]
@@ -33,12 +33,12 @@ namespace de.softwaremess.loxnetTests
         {
             Scanner scanner = new Scanner("5+4;\n");
             Parser parser = new Parser(scanner.scanTokens());
-            Expr expr = parser.Parse();
+            List<Stmt> stmts = parser.Parse();
 
-            Assert.That(expr, Is.InstanceOf(typeof(Expr.Binary)));
-            Assert.That(((Expr.Binary)expr).right, Is.InstanceOf(typeof(Expr.Literal)));
-            Assert.That(((Expr.Binary)expr).left, Is.InstanceOf(typeof(Expr.Literal)));
-            Assert.That(((Expr.Literal)((Expr.Binary)expr).right).value, Is.EqualTo(4));
+            Assert.That(((Stmt.Expression)stmts[0]).expression, Is.InstanceOf(typeof(Expr.Binary)));
+            Assert.That(((Expr.Binary)((Stmt.Expression)stmts[0]).expression).right, Is.InstanceOf(typeof(Expr.Literal)));
+            Assert.That(((Expr.Binary)((Stmt.Expression)stmts[0]).expression).left, Is.InstanceOf(typeof(Expr.Literal)));
+            Assert.That(((Expr.Literal)((Expr.Binary)((Stmt.Expression)stmts[0]).expression).right).value, Is.EqualTo(4));
         }
 
         [Test]
@@ -46,15 +46,35 @@ namespace de.softwaremess.loxnetTests
         {
             Scanner scanner = new Scanner("(4==5)==true;\n");
             Parser parser = new Parser(scanner.scanTokens());
-            Expr expr = parser.Parse();
+            List<Stmt> stmts = parser.Parse();
 
-            Assert.That(expr, Is.InstanceOf(typeof(Expr.Binary)));
-            Assert.That(((Expr.Binary)expr).left, Is.InstanceOf(typeof(Expr.Grouping)));
-            Assert.That(((Expr.Binary)expr).op, Is.InstanceOf(typeof(Token)));
-            Assert.That(((Expr.Binary)expr).right, Is.InstanceOf(typeof(Expr.Literal)));
+            Assert.That(((Stmt.Expression)stmts[0]).expression, Is.InstanceOf(typeof(Expr.Binary)));
+            Assert.That(((Expr.Binary)((Stmt.Expression)stmts[0]).expression).left, Is.InstanceOf(typeof(Expr.Grouping)));
+            Assert.That(((Expr.Binary)((Stmt.Expression)stmts[0]).expression).op, Is.InstanceOf(typeof(Token)));
+            Assert.That(((Expr.Binary)((Stmt.Expression)stmts[0]).expression).right, Is.InstanceOf(typeof(Expr.Literal)));
 
-            Assert.That(((Expr.Literal)((Expr.Binary)expr).right).value, Is.EqualTo(true));
+            Assert.That(((Expr.Literal)((Expr.Binary)((Stmt.Expression)stmts[0]).expression).right).value, Is.EqualTo(true));
 
+        }
+
+        [Test]
+        public void CanParsePrintStatement()
+        {
+            Scanner scanner = new Scanner("print (4==5)==true;\n");
+            Parser parser = new Parser(scanner.scanTokens());
+            List<Stmt> stmts = parser.Parse();
+
+            Assert.That((stmts[0]), Is.InstanceOf(typeof(Stmt.Print)));
+        }
+
+        [Test]
+        public void CanParseVarStatement()
+        {
+            Scanner scanner = new Scanner("var a = 1;\n");
+            Parser parser = new Parser(scanner.scanTokens());
+            List<Stmt> stmts = parser.Parse();
+
+            Assert.That((stmts[0]), Is.InstanceOf(typeof(Stmt.Var)));
         }
     }
 }

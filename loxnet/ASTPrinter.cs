@@ -37,6 +37,18 @@ namespace de.softwaremess.loxnet
             return Parenthesize(expr.op.lexeme, expr.right);
         }
 
+        public string VisitVariableExpr(Expr.Variable expr)
+        {
+            if (expr.name == null) return "nil";
+            return expr.name.ToString();
+        }
+
+        public string VisitAssignExpr(Expr.Assign expr)
+        {
+            if (expr.name == null) return "nil";
+            return "Assign " + expr.name.ToString() + " to " + expr.value.ToString();
+        }
+
         private String Parenthesize(string name, params Expr[] exprs)
         {
             StringBuilder builder = new StringBuilder();

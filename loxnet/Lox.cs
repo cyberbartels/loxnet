@@ -48,14 +48,14 @@ namespace de.softwaremess.loxnet
             List<Token> tokens = scanner.scanTokens();
 
             Parser parser = new Parser(tokens);
-            Expr expression = parser.Parse();
+            List<Stmt> statements = parser.Parse();
 
             // Stop if there was a syntax error.
             if (hadError) return;
 
-            Console.WriteLine(new ASTPrinter().Print(expression));
+            //Console.WriteLine(new ASTPrinter().Print(expression));
 
-            interpreter.Interpret(expression);
+            interpreter.Interpret(statements);
 
             //// For now, just print the tokens.
             //foreach (Token token in tokens)
