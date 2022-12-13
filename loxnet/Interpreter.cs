@@ -136,6 +136,15 @@ namespace de.softwaremess.loxnet
             return null;
         }
 
+        public object VisitWhileStmt(Stmt.While stmt)
+        {
+            while (IsTruthy(Evaluate(stmt.condition)))
+            {
+                Execute(stmt.body);
+            }
+            return null;
+        }
+
         public object VisitExpressionStmt(Stmt.Expression stmt)
         {
             Evaluate(stmt.expression);
