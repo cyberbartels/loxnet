@@ -30,6 +30,20 @@ namespace de.softwaremess.loxnet
             return expr.value;
         }
 
+        public object VisitLogicalExpr(Expr.Logical expr)
+        {
+            object left = Evaluate(expr.left);
+
+            if (expr.op.type == TokenType.OR) {
+                if (IsTruthy(left)) return left;
+            } else
+            {
+                if (!IsTruthy(left)) return left;
+            }
+
+            return Evaluate(expr.right);
+        }
+
         public object VisitUnaryExpr(Expr.Unary expr)
         {
             object right = Evaluate(expr.right);
