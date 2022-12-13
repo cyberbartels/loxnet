@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualBasic;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -50,12 +51,67 @@ namespace de.softwaremess.loxnet
 
         private Stmt Statement()
         {
+            if (Match(TokenType.FOR)) return ForStatement();
             if (Match(TokenType.IF)) return IfStatement();
             if (Match(TokenType.PRINT)) return PrintStatement();
             if (Match(TokenType.WHILE)) return WhileStatement();
             if (Match(TokenType.LEFT_BRACE)) return new Stmt.Block(Block());
 
             return ExpressionStatement();
+        }
+
+        private Stmt ForStatement()
+        {
+            Consume(TokenType.LEFT_PAREN, "Expect '(' after 'for'.");
+
+            Stmt initializer;
+            if (Match(TokenType.SEMICOLON))
+            {
+                initializer = null;
+            }
+            else if (Match(TokenType.VAR))
+            {
+                initializer = VarDeclaration();
+            }
+            else
+            {
+                initializer = ExpressionStatement();
+            }
+
+            Expr condition = null;
+            if (!Check(TokenType.SEMICOLON))
+            {
+                condition = Expression();
+            }
+            Consume(TokenType.SEMICOLON, "Expect ';' after loop condition.");
+
+            Expr increment = null;
+            if (!Check(TokenType.RIGHT_PAREN))
+            {
+                increment = Expression();
+            }
+            Consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
+
+            Stmt body = Statement();
+
+            //Construct While Statement equivalent to for loop
+            if (increment != null)
+            {
+                Stmt[] blockStmts = { body, new Stmt.Expression(increment) };
+                body = new Stmt.Block( new List<Stmt>(blockStmts) );
+            }
+            
+            if (condition == null) condition = new Expr.Literal(true);
+            body = new Stmt.While(condition, body);
+
+            if (initializer != null)
+            {
+                Stmt[] initializerWithWhileStmts = { initializer, body };
+                body = new Stmt.Block(new List<Stmt>(initializerWithWhileStmts));
+            }
+
+
+            return body;
         }
 
         private Stmt IfStatement()
