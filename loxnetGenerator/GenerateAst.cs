@@ -20,7 +20,6 @@ namespace de.softwaremess.loxnet.tool
             string outputDir = args[0];
             string[] expressionTypes = { "Assign   : Token name, Expr value",
                                          "Binary   : Expr left, Token op, Expr right",
-                                         "Call     : Expr callee, Token paren, List<Expr> arguments",
                                          "Grouping : Expr expression",
                                          "Literal  : Object value",
                                          "Logical  : Expr left, Token op, Expr right",
