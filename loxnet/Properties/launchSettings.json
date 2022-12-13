@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "loxnet": {
+      "commandName": "Project",
+      "commandLineArgs": "X:\\Projekte\\VisualStudio\\loxnet\\loxnet\\test.lx"
+    }
+  }
+}

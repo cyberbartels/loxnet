@@ -21,6 +21,11 @@ namespace de.softwaremess.loxnet
             return Parenthesize(expr.op.lexeme, expr.left, expr.right);
         }
 
+        public string VisitLogicalExpr(Expr.Logical expr)
+        {
+            return Parenthesize(expr.op.lexeme, expr.left, expr.right);
+        }
+
         public string VisitGroupingExpr(Expr.Grouping expr)
         {
             return Parenthesize("group", expr.expression);
