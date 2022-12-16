@@ -112,6 +112,21 @@ namespace de.softwaremess.loxnet
             return null;
         }
 
+        public object VisitCallExpr(Expr.Call expr)
+        {
+            Object callee = Evaluate(expr.callee);
+
+            List<object> arguments = new List<object>();
+            foreach (Expr argument in expr.arguments)
+            {
+                arguments.Add(Evaluate(argument));
+            }
+
+            LoxCallable function = (LoxCallable)callee;
+            return function.call(this, arguments);
+        }
+
+
         public object VisitAssignExpr(Expr.Assign expr)
         {
             object value = Evaluate(expr.value);
