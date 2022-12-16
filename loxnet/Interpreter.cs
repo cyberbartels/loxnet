@@ -114,7 +114,7 @@ namespace de.softwaremess.loxnet
 
         public object VisitCallExpr(Expr.Call expr)
         {
-            Object callee = Evaluate(expr.callee);
+            object callee = Evaluate(expr.callee);
 
             List<object> arguments = new List<object>();
             foreach (Expr argument in expr.arguments)
@@ -122,8 +122,13 @@ namespace de.softwaremess.loxnet
                 arguments.Add(Evaluate(argument));
             }
 
-            LoxCallable function = (LoxCallable)callee;
-            return function.call(this, arguments);
+            if (!(typeof(ILoxCallable).IsInstanceOfType(callee))) 
+            {
+                throw new RuntimeError(expr.paren, "Can only call functions and classes.");
+            }
+
+            ILoxCallable function = (ILoxCallable)callee;
+            return function.Call(this, arguments);
         }
 
 
