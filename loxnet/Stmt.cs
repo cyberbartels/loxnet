@@ -9,6 +9,7 @@ namespace de.softwaremess.loxnet
       {
           R VisitBlockStmt(Block stmt);
           R VisitExpressionStmt(Expression stmt);
+          R VisitFunctionStmt(Function stmt);
           R VisitIfStmt(If stmt);
           R VisitPrintStmt(Print stmt);
           R VisitVarStmt(Var stmt);
@@ -41,6 +42,24 @@ namespace de.softwaremess.loxnet
           }
 
           public readonly Expr expression;
+      }
+      public class Function : Stmt
+      {
+          public Function(Token name, List<Token> params, List<Stmt> body)
+          {
+              this.name = name;
+              this.params = params;
+              this.body = body;
+          }
+
+          public override R Accept<R>(IVisitor<R> visitor)
+          {
+              return visitor.VisitFunctionStmt(this);
+          }
+
+          public readonly Token name;
+          public readonly List<Token> params;
+          public readonly List<Stmt> body;
       }
       public class If : Stmt
       {
