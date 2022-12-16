@@ -8,9 +8,12 @@ namespace de.softwaremess.loxnet
 {
     public class Interpreter : Expr.IVisitor<object>, Stmt.IVisitor<object>
     {
+        readonly VarEnvironment globals = new VarEnvironment();
         private VarEnvironment environment = new VarEnvironment();
 
-        public void Interpret(List<Stmt> statements)
+       
+
+    public void Interpret(List<Stmt> statements)
         {
             try
             {
@@ -129,10 +132,10 @@ namespace de.softwaremess.loxnet
 
             ILoxCallable function = (ILoxCallable)callee;
 
-            if (arguments.Count != function.arity())
+            if (arguments.Count != function.Arity)
             {
                 throw new RuntimeError(expr.paren, "Expected " +
-                    function.arity() + " arguments but got " +
+                    function.Arity + " arguments but got " +
                     arguments.Count + ".");
             }
 
