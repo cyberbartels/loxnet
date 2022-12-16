@@ -45,10 +45,10 @@ namespace de.softwaremess.loxnet
       }
       public class Function : Stmt
       {
-          public Function(Token name, List<Token> params, List<Stmt> body)
+          public Function(Token name, List<Token> parameters, List<Stmt> body)
           {
               this.name = name;
-              this.params = params;
+              this.parameters = parameters;
               this.body = body;
           }
 
@@ -58,7 +58,7 @@ namespace de.softwaremess.loxnet
           }
 
           public readonly Token name;
-          public readonly List<Token> params;
+          public readonly List<Token> parameters;
           public readonly List<Stmt> body;
       }
       public class If : Stmt
