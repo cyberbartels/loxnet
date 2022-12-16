@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using de.softwaremess.loxnet.NativeFunction;
 
 namespace de.softwaremess.loxnet
 {
@@ -11,9 +12,12 @@ namespace de.softwaremess.loxnet
         readonly VarEnvironment globals = new VarEnvironment();
         private VarEnvironment environment = new VarEnvironment();
 
-       
+        public Interpreter()
+        {
+            globals.Define("clock", new Clock());
+        }
 
-    public void Interpret(List<Stmt> statements)
+        public void Interpret(List<Stmt> statements)
         {
             try
             {
@@ -37,9 +41,11 @@ namespace de.softwaremess.loxnet
         {
             object left = Evaluate(expr.left);
 
-            if (expr.op.type == TokenType.OR) {
+            if (expr.op.type == TokenType.OR)
+            {
                 if (IsTruthy(left)) return left;
-            } else
+            }
+            else
             {
                 if (!IsTruthy(left)) return left;
             }
@@ -51,7 +57,8 @@ namespace de.softwaremess.loxnet
         {
             object right = Evaluate(expr.right);
 
-            switch (expr.op.type) {
+            switch (expr.op.type)
+            {
                 case TokenType.BANG:
                     return !IsTruthy(right);
                 case TokenType.MINUS:
@@ -125,7 +132,7 @@ namespace de.softwaremess.loxnet
                 arguments.Add(Evaluate(argument));
             }
 
-            if (!(typeof(ILoxCallable).IsInstanceOfType(callee))) 
+            if (!(typeof(ILoxCallable).IsInstanceOfType(callee)))
             {
                 throw new RuntimeError(expr.paren, "Can only call functions and classes.");
             }
@@ -268,7 +275,8 @@ namespace de.softwaremess.loxnet
         {
             if (obj == null) return "nil";
 
-            if (typeof(bool).IsInstanceOfType(obj)) {
+            if (typeof(bool).IsInstanceOfType(obj))
+            {
                 string text = obj.ToString();
                 if (text.EndsWith(".0"))
                 {
