@@ -322,7 +322,7 @@ namespace de.softwaremess.loxnet
 
         private Expr FinishCall(Expr callee)
         {
-            List<Expr> arguments = new ArrayList<>();
+            List<Expr> arguments = new List<Expr>();
             if (!Check(TokenType.RIGHT_PAREN))
             {
                 do
@@ -331,7 +331,7 @@ namespace de.softwaremess.loxnet
                     {
                         Error(Peek(), "Can't have more than 255 arguments.");
                     }
-                    arguments.add(Expression());
+                    arguments.Add(Expression());
                 } while (Match(TokenType.COMMA));
             }
 
