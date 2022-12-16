@@ -8,6 +8,7 @@ namespace de.softwaremess.loxnet
 {
     public interface ILoxCallable
     {
+        int arity();
         object Call(Interpreter interpreter, List<object> arguments);
     }
 }

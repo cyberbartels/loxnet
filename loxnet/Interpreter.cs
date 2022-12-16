@@ -128,6 +128,14 @@ namespace de.softwaremess.loxnet
             }
 
             ILoxCallable function = (ILoxCallable)callee;
+
+            if (arguments.Count != function.arity())
+            {
+                throw new RuntimeError(expr.paren, "Expected " +
+                    function.arity() + " arguments but got " +
+                    arguments.Count + ".");
+            }
+
             return function.Call(this, arguments);
         }
 
