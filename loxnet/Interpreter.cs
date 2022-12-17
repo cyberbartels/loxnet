@@ -9,7 +9,7 @@ namespace de.softwaremess.loxnet
 {
     public class Interpreter : Expr.IVisitor<object>, Stmt.IVisitor<object>
     {
-        readonly VarEnvironment globals = new VarEnvironment();
+        public readonly VarEnvironment globals = new VarEnvironment();
         private VarEnvironment environment = new VarEnvironment();
 
         public Interpreter()
@@ -189,6 +189,13 @@ namespace de.softwaremess.loxnet
             return null;
         }
 
+        public object VisitFunctionStmt(Stmt.Function stmt)
+        {
+            LoxFunction function = new LoxFunction(stmt);
+            environment.Define(stmt.name.lexeme, function);
+            return null;
+        }
+
         public object VisitIfStmt(Stmt.If stmt)
         {
             if (IsTruthy(Evaluate(stmt.condition)))
@@ -225,7 +232,7 @@ namespace de.softwaremess.loxnet
             stmt.Accept(this);
         }
 
-        void ExecuteBlock(List<Stmt> statements, VarEnvironment environment)
+        public void ExecuteBlock(List<Stmt> statements, VarEnvironment environment)
         {
             VarEnvironment previous = this.environment;
             try
