@@ -4,17 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using de.softwaremess.loxnet.NativeFunction;
+using static de.softwaremess.loxnet.Stmt;
 
 namespace de.softwaremess.loxnet
 {
     public class Interpreter : Expr.IVisitor<object>, Stmt.IVisitor<object>
     {
         public readonly VarEnvironment globals = new VarEnvironment();
-        private VarEnvironment environment = new VarEnvironment();
+        private VarEnvironment environment;
 
         public Interpreter()
         {
             globals.Define("clock", new Clock());
+            this.environment = this.globals;
         }
 
         public void Interpret(List<Stmt> statements)
@@ -214,6 +216,14 @@ namespace de.softwaremess.loxnet
             object value = Evaluate(stmt.expression);
             Console.WriteLine(Stringify(value));
             return null;
+        }
+
+        public object VisitReturnStmt(Stmt.Return stmt)
+        {
+            object value = null;
+            if (stmt.value != null) value = Evaluate(stmt.value);
+
+            throw new Return(value);
         }
 
         public object VisitBlockStmt(Stmt.Block stmt)

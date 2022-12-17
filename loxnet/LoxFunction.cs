@@ -25,7 +25,14 @@ namespace de.softwaremess.loxnet
                     arguments[i]);
             }
 
-            interpreter.ExecuteBlock(declaration.body, environment);
+            try
+            {
+                interpreter.ExecuteBlock(declaration.body, environment);
+            }
+            catch (Return returnValue)
+            {
+                return returnValue.value;
+            }
             return null;
         }
 
