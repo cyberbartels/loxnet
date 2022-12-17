@@ -12,6 +12,7 @@ namespace de.softwaremess.loxnet
           R VisitFunctionStmt(Function stmt);
           R VisitIfStmt(If stmt);
           R VisitPrintStmt(Print stmt);
+          R VisitReturnStmt(Return stmt);
           R VisitVarStmt(Var stmt);
           R VisitWhileStmt(While stmt);
       }
@@ -45,10 +46,10 @@ namespace de.softwaremess.loxnet
       }
       public class Function : Stmt
       {
-          public Function(Token name, List<Token> parameters, List<Stmt> body)
+          public Function(Token name, List<Token> params, List<Stmt> body)
           {
               this.name = name;
-              this.parameters = parameters;
+              this.params = params;
               this.body = body;
           }
 
@@ -58,7 +59,7 @@ namespace de.softwaremess.loxnet
           }
 
           public readonly Token name;
-          public readonly List<Token> parameters;
+          public readonly List<Token> params;
           public readonly List<Stmt> body;
       }
       public class If : Stmt
@@ -92,6 +93,22 @@ namespace de.softwaremess.loxnet
           }
 
           public readonly Expr expression;
+      }
+      public class Return : Stmt
+      {
+          public Return(Token keyword, Expr value)
+          {
+              this.keyword = keyword;
+              this.value = value;
+          }
+
+          public override R Accept<R>(IVisitor<R> visitor)
+          {
+              return visitor.VisitReturnStmt(this);
+          }
+
+          public readonly Token keyword;
+          public readonly Expr value;
       }
       public class Var : Stmt
       {
