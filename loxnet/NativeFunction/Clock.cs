@@ -11,7 +11,7 @@ namespace de.softwaremess.loxnet.NativeFunction
         public int Arity { get { return 0; } }
         public object Call(Interpreter interpreter, List<object> arguments)
         {
-            return (double) DateTime.Now.Ticks / 1000.0;
+            return (double)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000.0;
         }
         public string ToString() { return "<native fn>"; }
     }
