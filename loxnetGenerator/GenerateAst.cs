@@ -20,6 +20,7 @@ namespace de.softwaremess.loxnet.tool
             string outputDir = args[0];
             string[] expressionTypes = { "Assign   : Token name, Expr value",
                                          "Binary   : Expr left, Token op, Expr right",
+                                         "Call     : Expr callee, Token paren, List<Expr> arguments",
                                          "Grouping : Expr expression",
                                          "Literal  : Object value",
                                          "Logical  : Expr left, Token op, Expr right",
@@ -29,9 +30,12 @@ namespace de.softwaremess.loxnet.tool
 
             string[] statementTypes = { "Block      : List<Stmt> statements",
                                         "Expression : Expr expression",
+                                        "Function   : Token name, List<Token> params," +
+                                                    " List<Stmt> body",
                                         "If         : Expr condition, Stmt thenBranch," +
                                                     " Stmt elseBranch",
                                         "Print      : Expr expression",
+                                        "Return     : Token keyword, Expr value",
                                         "Var        : Token name, Expr initializer",
                                         "While      : Expr condition, Stmt body"};
             DefineAst(outputDir, "Stmt", new List<string>(statementTypes));

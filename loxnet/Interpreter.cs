@@ -3,12 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using de.softwaremess.loxnet.NativeFunction;
+using static de.softwaremess.loxnet.Stmt;
 
 namespace de.softwaremess.loxnet
 {
     public class Interpreter : Expr.IVisitor<object>, Stmt.IVisitor<object>
     {
-        private VarEnvironment environment = new VarEnvironment();
+        public readonly VarEnvironment globals = new VarEnvironment();
+        private VarEnvironment environment;
+
+        public Interpreter()
+        {
+            globals.Define("clock", new Clock());
+            this.environment = this.globals;
+        }
 
         public void Interpret(List<Stmt> statements)
         {
@@ -34,9 +43,11 @@ namespace de.softwaremess.loxnet
         {
             object left = Evaluate(expr.left);
 
-            if (expr.op.type == TokenType.OR) {
+            if (expr.op.type == TokenType.OR)
+            {
                 if (IsTruthy(left)) return left;
-            } else
+            }
+            else
             {
                 if (!IsTruthy(left)) return left;
             }
@@ -48,7 +59,8 @@ namespace de.softwaremess.loxnet
         {
             object right = Evaluate(expr.right);
 
-            switch (expr.op.type) {
+            switch (expr.op.type)
+            {
                 case TokenType.BANG:
                     return !IsTruthy(right);
                 case TokenType.MINUS:
@@ -112,6 +124,34 @@ namespace de.softwaremess.loxnet
             return null;
         }
 
+        public object VisitCallExpr(Expr.Call expr)
+        {
+            object callee = Evaluate(expr.callee);
+
+            List<object> arguments = new List<object>();
+            foreach (Expr argument in expr.arguments)
+            {
+                arguments.Add(Evaluate(argument));
+            }
+
+            if (!(typeof(ILoxCallable).IsInstanceOfType(callee)))
+            {
+                throw new RuntimeError(expr.paren, "Can only call functions and classes.");
+            }
+
+            ILoxCallable function = (ILoxCallable)callee;
+
+            if (arguments.Count != function.Arity)
+            {
+                throw new RuntimeError(expr.paren, "Expected " +
+                    function.Arity + " arguments but got " +
+                    arguments.Count + ".");
+            }
+
+            return function.Call(this, arguments);
+        }
+
+
         public object VisitAssignExpr(Expr.Assign expr)
         {
             object value = Evaluate(expr.value);
@@ -151,6 +191,13 @@ namespace de.softwaremess.loxnet
             return null;
         }
 
+        public object VisitFunctionStmt(Stmt.Function stmt)
+        {
+            LoxFunction function = new LoxFunction(stmt, environment);
+            environment.Define(stmt.name.lexeme, function);
+            return null;
+        }
+
         public object VisitIfStmt(Stmt.If stmt)
         {
             if (IsTruthy(Evaluate(stmt.condition)))
@@ -171,6 +218,14 @@ namespace de.softwaremess.loxnet
             return null;
         }
 
+        public object VisitReturnStmt(Stmt.Return stmt)
+        {
+            object value = null;
+            if (stmt.value != null) value = Evaluate(stmt.value);
+
+            throw new Return(value);
+        }
+
         public object VisitBlockStmt(Stmt.Block stmt)
         {
             ExecuteBlock(stmt.statements, new VarEnvironment(environment));
@@ -187,7 +242,7 @@ namespace de.softwaremess.loxnet
             stmt.Accept(this);
         }
 
-        void ExecuteBlock(List<Stmt> statements, VarEnvironment environment)
+        public void ExecuteBlock(List<Stmt> statements, VarEnvironment environment)
         {
             VarEnvironment previous = this.environment;
             try
@@ -237,7 +292,8 @@ namespace de.softwaremess.loxnet
         {
             if (obj == null) return "nil";
 
-            if (typeof(bool).IsInstanceOfType(obj)) {
+            if (typeof(bool).IsInstanceOfType(obj))
+            {
                 string text = obj.ToString();
                 if (text.EndsWith(".0"))
                 {

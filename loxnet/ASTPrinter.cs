@@ -15,10 +15,14 @@ namespace de.softwaremess.loxnet
             return expr.Accept(this);
         }
 
-
         public string VisitBinaryExpr(Expr.Binary expr)
         {
             return Parenthesize(expr.op.lexeme, expr.left, expr.right);
+        }
+
+        public string VisitCallExpr(Expr.Call expr)
+        {
+            return expr.callee + "( " + expr.arguments.ToArray().ToString() + ")";
         }
 
         public string VisitLogicalExpr(Expr.Logical expr)
