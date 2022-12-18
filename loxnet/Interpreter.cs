@@ -193,7 +193,7 @@ namespace de.softwaremess.loxnet
 
         public object VisitFunctionStmt(Stmt.Function stmt)
         {
-            LoxFunction function = new LoxFunction(stmt);
+            LoxFunction function = new LoxFunction(stmt, environment);
             environment.Define(stmt.name.lexeme, function);
             return null;
         }

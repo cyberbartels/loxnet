@@ -10,16 +10,18 @@ namespace de.softwaremess.loxnet
     public class LoxFunction : ILoxCallable
     {
         private readonly Stmt.Function declaration;
+        private readonly VarEnvironment closure;
 
         public int Arity { get { return declaration.parameters.Count; } }
-        public LoxFunction(Stmt.Function declaration)
+        public LoxFunction(Stmt.Function declaration, VarEnvironment closure)
         {
+            this.closure= closure;
             this.declaration = declaration;
         }
 
         public object Call(Interpreter interpreter, List<object> arguments)
         {
-            VarEnvironment environment = new VarEnvironment(interpreter.globals);
+            VarEnvironment environment = new VarEnvironment(closure);
             for (int i = 0; i < declaration.parameters.Count; i++) {
                 environment.Define(declaration.parameters[i].lexeme,
                     arguments[i]);
