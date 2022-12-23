@@ -53,7 +53,13 @@ namespace de.softwaremess.loxnet
             // Stop if there was a syntax error.
             if (hadError) return;
 
+            Resolver resolver = new Resolver(interpreter);
+            resolver.Resolve(statements);
+
             //Console.WriteLine(new ASTPrinter().Print(expression));
+
+            // Stop if there was a resolution error.
+            if (hadError) return;
 
             interpreter.Interpret(statements);
 
