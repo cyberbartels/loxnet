@@ -148,11 +148,12 @@ namespace de.softwaremess.loxnet
 
         public object VisitVariableExpr(Expr.Variable expr)
         {
-            //if ((scopes.Count != 0) &&
-            //    scopes.Peek()[expr.name.lexeme] == false)
-            //{
-            //    Lox.Error(expr.name, "Can't read local variable in its own initializer.");
-            //}
+            bool check = false;
+            if ((scopes.Count != 0) &&
+                scopes.Peek().TryGetValue(expr.name.lexeme, out check) && check == false)
+            {
+                Lox.Error(expr.name, "Can't read local variable in its own initializer.");
+            }
 
             ResolveLocal(expr, expr.name);
             return null;
@@ -223,11 +224,11 @@ namespace de.softwaremess.loxnet
 
         private void ResolveLocal(Expr expr, Token name)
         {
-            for (int i = scopes.Count - 1; i >= 0; i--)
+            for (int i = 0; i <= scopes.Count - 1; i++)
             {
                 if (scopes.ElementAt(i).ContainsKey(name.lexeme))
                 {
-                    interpreter.Resolve(expr, scopes.Count - 1 - i);
+                    interpreter.Resolve(expr, i);
                     return;
                 }
             }
