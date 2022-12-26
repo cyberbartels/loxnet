@@ -12,6 +12,7 @@ namespace de.softwaremess.loxnet
     {
         public readonly VarEnvironment globals = new VarEnvironment();
         private VarEnvironment environment;
+        private readonly Dictionary<Expr, int?> locals = new Dictionary<Expr, int?>();
 
         public Interpreter()
         {
@@ -155,13 +156,36 @@ namespace de.softwaremess.loxnet
         public object VisitAssignExpr(Expr.Assign expr)
         {
             object value = Evaluate(expr.value);
-            environment.Assign(expr.name, value);
+            int? distance; 
+            if (locals.TryGetValue(expr, out distance))
+            {
+                environment.AssignAt((int)distance, expr.name, value);
+            }
+            else
+            {
+                globals.Assign(expr.name, value);
+            }
+
             return value;
         }
 
         public object VisitVariableExpr(Expr.Variable expr)
         {
-            return environment.Get(expr.name);
+            return LookUpVariable(expr.name, expr);
+        }
+
+        private Object LookUpVariable(Token name, Expr expr)
+        {
+            int? distance;
+            
+            if (locals.TryGetValue(expr, out distance))
+            {
+                return environment.GetAt((int)distance, name.lexeme);
+            }
+            else
+            {
+                return globals.Get(name);
+            }
         }
 
         public object VisitVarStmt(Stmt.Var stmt)
@@ -240,6 +264,11 @@ namespace de.softwaremess.loxnet
         private void Execute(Stmt stmt)
         {
             stmt.Accept(this);
+        }
+
+        public void Resolve(Expr expr, int depth)
+        {
+            locals[expr] = depth;
         }
 
         public void ExecuteBlock(List<Stmt> statements, VarEnvironment environment)

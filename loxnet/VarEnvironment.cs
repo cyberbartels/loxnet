@@ -26,6 +26,27 @@ namespace de.softwaremess.loxnet
             values[name] = value;
         }
 
+        private VarEnvironment Ancestor(int distance)
+        {
+            VarEnvironment environment = this;
+            for (int i = 0; i < distance; i++)
+            {
+                environment = environment.enclosing;
+            }
+
+            return environment;
+        }
+
+        public object GetAt(int distance, String name)
+        {
+            return Ancestor(distance).values[name];
+        }
+
+        public void AssignAt(int distance, Token name, Object value)
+        {
+            Ancestor(distance).values[name.lexeme] = value;
+        }
+
         public object Get(Token name)
         {
             if (values.ContainsKey(name.lexeme))
