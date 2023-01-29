@@ -152,7 +152,7 @@ namespace de.softwaremess.loxnet
             return function.Call(this, arguments);
         }
 
-        public object visitGetExpr(Expr.Get expr)
+        public object VisitGetExpr(Expr.Get expr)
         {
             object obj = Evaluate(expr.expression);
             if (typeof(LoxInstance).IsInstanceOfType(obj)) {
