@@ -1,13 +1,26 @@
-﻿var a = false;
-print a;
-
-if(a)
-{
-	print "yes!";
-}
-else
-{
-	print "no!";
+﻿
+fun fib(n) {
+ // print n;
+  if (n < 2) return n;
+  return fib(n - 1) + fib(n - 2); 
 }
 
-print ( a or  true) ;
+fun funfactor(){
+	var funfactorVar = "funfactor";
+	print funfactorVar;
+
+	fun innerFun() {
+		print funfactorVar;
+	}
+
+	return innerFun;
+}
+
+var before = clock();
+print fib(10);
+var after = clock();
+print before;
+print after;
+print after - before;
+
+funfactor()();

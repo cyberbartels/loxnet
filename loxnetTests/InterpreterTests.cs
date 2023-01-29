@@ -1,4 +1,5 @@
 ﻿using de.softwaremess.loxnet;
+using static de.softwaremess.loxnet.Stmt;
 
 namespace de.softwaremess.loxnetTests
 {
@@ -124,6 +125,23 @@ namespace de.softwaremess.loxnetTests
             Interpreter interpreter = new Interpreter();
 
             Scanner scanner = new Scanner("class SimpleClass\r\n{\r\nsomeMethod() {\r\n  return \"Method invoked\";\r\n }\r\n } \r\n print SimpleClass;");
+            List<Token> tokens = scanner.ScanTokens();
+
+            Parser parser = new Parser(tokens);
+            List<Stmt> stmts = parser.Parse();
+
+            Resolver resolver = new Resolver(interpreter);
+            resolver.Resolve(stmts);
+
+            interpreter.Interpret(stmts);
+        }
+
+        [Test]
+        public void CanInterpretInstanceCreation()
+        {
+            Interpreter interpreter = new Interpreter();
+
+            Scanner scanner = new Scanner("class SimpleClass\r\n{\r\nsomeMethod() {\r\n  return \"Method invoked\";\r\n }\r\n } \r\n var instance = SimpleClass(); \r\n print instance;");
             List<Token> tokens = scanner.ScanTokens();
 
             Parser parser = new Parser(tokens);

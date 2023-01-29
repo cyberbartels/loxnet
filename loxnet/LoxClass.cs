@@ -7,9 +7,11 @@ using System.Xml.Linq;
 
 namespace de.softwaremess.loxnet
 {
-    public class LoxClass
+    public class LoxClass : ILoxCallable
     {
-        readonly string name;
+        public readonly string name;
+
+        public int Arity { get { return 0; } }
 
         public LoxClass(string name)
         {
@@ -20,5 +22,13 @@ namespace de.softwaremess.loxnet
         {
             return name;
         }
+
+        public Object Call(Interpreter interpreter,
+                           List<Object> arguments)
+        {
+            LoxInstance instance = new LoxInstance(this);
+            return instance;
+        }
+
     }
 }
