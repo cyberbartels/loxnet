@@ -10,6 +10,7 @@ namespace de.softwaremess.loxnet
           R VisitAssignExpr(Assign expr);
           R VisitBinaryExpr(Binary expr);
           R VisitCallExpr(Call expr);
+          R VisitGetExpr(Get expr);
           R VisitGroupingExpr(Grouping expr);
           R VisitLiteralExpr(Literal expr);
           R VisitLogicalExpr(Logical expr);
@@ -67,6 +68,22 @@ namespace de.softwaremess.loxnet
           public readonly Expr callee;
           public readonly Token paren;
           public readonly List<Expr> arguments;
+      }
+      public class Get : Expr
+      {
+          public Get(Expr expression, Token name)
+          {
+              this.expression = expression;
+              this.name = name;
+          }
+
+          public override R Accept<R>(IVisitor<R> visitor)
+          {
+              return visitor.VisitGetExpr(this);
+          }
+
+          public readonly Expr expression;
+          public readonly Token name;
       }
       public class Grouping : Expr
       {

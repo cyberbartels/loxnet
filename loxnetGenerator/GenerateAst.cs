@@ -21,6 +21,7 @@ namespace de.softwaremess.loxnet.tool
             string[] expressionTypes = { "Assign   : Token name, Expr value",
                                          "Binary   : Expr left, Token op, Expr right",
                                          "Call     : Expr callee, Token paren, List<Expr> arguments",
+                                         "Get      : Expr expression, Token name",
                                          "Grouping : Expr expression",
                                          "Literal  : Object value",
                                          "Logical  : Expr left, Token op, Expr right",
