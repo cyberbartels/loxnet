@@ -25,6 +25,7 @@ namespace de.softwaremess.loxnet.tool
                                          "Grouping : Expr expression",
                                          "Literal  : Object value",
                                          "Logical  : Expr left, Token op, Expr right",
+                                         "Set      : Expr obj, Token name, Expr value",
                                          "Unary    : Token op, Expr right",
                                          "Variable : Token name"};
             DefineAst(outputDir, "Expr", new List<string>(expressionTypes));

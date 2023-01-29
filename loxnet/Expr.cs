@@ -14,6 +14,7 @@ namespace de.softwaremess.loxnet
           R VisitGroupingExpr(Grouping expr);
           R VisitLiteralExpr(Literal expr);
           R VisitLogicalExpr(Logical expr);
+          R VisitSetExpr(Set expr);
           R VisitUnaryExpr(Unary expr);
           R VisitVariableExpr(Variable expr);
       }
@@ -130,6 +131,24 @@ namespace de.softwaremess.loxnet
           public readonly Expr left;
           public readonly Token op;
           public readonly Expr right;
+      }
+      public class Set : Expr
+      {
+          public Set(Expr obj, Token name, Expr value)
+          {
+              this.obj = obj;
+              this.name = name;
+              this.value = value;
+          }
+
+          public override R Accept<R>(IVisitor<R> visitor)
+          {
+              return visitor.VisitSetExpr(this);
+          }
+
+          public readonly Expr obj;
+          public readonly Token name;
+          public readonly Expr value;
       }
       public class Unary : Expr
       {
