@@ -256,6 +256,14 @@ namespace de.softwaremess.loxnet
             return null;
         }
 
+        public object VisitClassStmt(Stmt.Class stmt)
+        {
+            environment.Define(stmt.name.lexeme, null);
+            LoxClass klass = new LoxClass(stmt.name.lexeme);
+            environment.Assign(stmt.name, klass);
+            return null;
+        }
+
         private object Evaluate(Expr expr)
         {
             return expr.Accept(this);

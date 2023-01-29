@@ -38,6 +38,7 @@ namespace de.softwaremess.loxnet
         {
             try
             {
+                if (Match(TokenType.CLASS)) return classDeclaration();
                 if (Match(TokenType.FUN)) return Function("function");
                 if (Match(TokenType.VAR)) return VarDeclaration();
 
@@ -164,20 +165,6 @@ namespace de.softwaremess.loxnet
             return statements;
         }
 
-        private Stmt VarDeclaration()
-        {
-            Token name = Consume(TokenType.IDENTIFIER, "Expect variable name.");
-
-            Expr initializer = null;
-            if (Match(TokenType.EQUAL))
-            {
-                initializer = Expression();
-            }
-
-            Consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
-            return new Stmt.Var(name, initializer);
-        }
-
         private Stmt WhileStatement()
         {
             Consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.");
@@ -195,6 +182,23 @@ namespace de.softwaremess.loxnet
             return new Stmt.Expression(expr);
         }
 
+        private Stmt classDeclaration()
+        {
+            Token name = Consume(TokenType.IDENTIFIER, "Expect class name.");
+            Consume(TokenType.LEFT_BRACE, "Expect '{' before class body.");
+
+            List<Stmt.Function> methods = new List<Stmt.Function>();
+            while (!Check(TokenType.RIGHT_BRACE) && !IsAtEnd())
+            {
+                methods.Add(Function("method"));
+            }
+
+            Consume(TokenType.RIGHT_BRACE, "Expect '}' after class body.");
+
+            return new Stmt.Class(name, methods);
+        }
+
+   
         private Stmt.Function Function(String kind)
         {
             Token name = Consume(TokenType.IDENTIFIER, "Expect " + kind + " name.");
@@ -218,6 +222,21 @@ namespace de.softwaremess.loxnet
             List<Stmt> body = Block();
             return new Stmt.Function(name, parameters, body);
         }
+
+        private Stmt VarDeclaration()
+        {
+            Token name = Consume(TokenType.IDENTIFIER, "Expect variable name.");
+
+            Expr initializer = null;
+            if (Match(TokenType.EQUAL))
+            {
+                initializer = Expression();
+            }
+
+            Consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
+            return new Stmt.Var(name, initializer);
+        }
+
 
         private Expr Expression()
         {

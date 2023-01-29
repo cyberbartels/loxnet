@@ -34,6 +34,13 @@ namespace de.softwaremess.loxnet
             return null;
         }
 
+        public object VisitClassStmt(Stmt.Class stmt)
+        {
+            Declare(stmt.name);
+            Define(stmt.name);
+            return null;
+        }
+
         public object VisitExpressionStmt(Stmt.Expression stmt)
         {
             Resolve(stmt.expression);
