@@ -38,7 +38,7 @@ namespace de.softwaremess.loxnet
         {
             try
             {
-                if (Match(TokenType.CLASS)) return classDeclaration();
+                if (Match(TokenType.CLASS)) return ClassDeclaration();
                 if (Match(TokenType.FUN)) return Function("function");
                 if (Match(TokenType.VAR)) return VarDeclaration();
 
@@ -182,7 +182,7 @@ namespace de.softwaremess.loxnet
             return new Stmt.Expression(expr);
         }
 
-        private Stmt classDeclaration()
+        private Stmt ClassDeclaration()
         {
             Token name = Consume(TokenType.IDENTIFIER, "Expect class name.");
             Consume(TokenType.LEFT_BRACE, "Expect '{' before class body.");
@@ -368,6 +368,11 @@ namespace de.softwaremess.loxnet
                 if (Match(TokenType.LEFT_PAREN))
                 {
                     expr = FinishCall(expr);
+                }
+                else if (Match(TokenType.DOT))
+                {
+                    Token name = Consume(TokenType.IDENTIFIER, "Expect property name after '.'.");
+                    expr = new Expr.Get(expr, name);
                 }
                 else
                 {

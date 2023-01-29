@@ -8,15 +8,15 @@ using static System.Formats.Asn1.AsnWriter;
 
 namespace de.softwaremess.loxnet
 {
-    
+
     public class Resolver : Expr.IVisitor<object>, Stmt.IVisitor<object>
     {
         private readonly Interpreter interpreter;
         private readonly Stack<Dictionary<string, bool>> scopes = new Stack<Dictionary<string, bool>>();
         private FunctionType currentFunction = FunctionType.NONE;
 
-        public Resolver(Interpreter interpreter) 
-        { 
+        public Resolver(Interpreter interpreter)
+        {
             this.interpreter = interpreter;
         }
 
@@ -129,6 +129,12 @@ namespace de.softwaremess.loxnet
             return null;
         }
 
+        public object VisitGetExpr(Expr.Get expr)
+        {
+            Resolve(expr.expression);
+            return null;
+        }
+
         public object VisitGroupingExpr(Expr.Grouping expr)
         {
             Resolve(expr.expression);
@@ -226,7 +232,7 @@ namespace de.softwaremess.loxnet
         private void Define(Token name)
         {
             if (scopes.Count == 0) return;
-            scopes.Peek()[name.lexeme] = true; 
+            scopes.Peek()[name.lexeme] = true;
         }
 
         private void ResolveLocal(Expr expr, Token name)

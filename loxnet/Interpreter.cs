@@ -152,6 +152,16 @@ namespace de.softwaremess.loxnet
             return function.Call(this, arguments);
         }
 
+        public object visitGetExpr(Expr.Get expr)
+        {
+            object obj = Evaluate(expr.expression);
+            if (typeof(LoxInstance).IsInstanceOfType(obj)) {
+                return ((LoxInstance)obj).Get(expr.name);
+            }
+
+            throw new RuntimeError(expr.name,
+                "Only instances have properties.");
+        }
 
         public object VisitAssignExpr(Expr.Assign expr)
         {
