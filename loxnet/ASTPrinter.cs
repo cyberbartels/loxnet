@@ -30,6 +30,11 @@ namespace de.softwaremess.loxnet
             return $"getter {expr.expression}";
         }
 
+        public string VisitSetExpr(Expr.Set expr)
+        {
+            return $"setter {expr.obj} {expr.value}";
+        }
+
         public string VisitLogicalExpr(Expr.Logical expr)
         {
             return Parenthesize(expr.op.lexeme, expr.left, expr.right);

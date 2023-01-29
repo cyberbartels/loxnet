@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using de.softwaremess.loxnet.NativeFunction;
+using static de.softwaremess.loxnet.Expr;
 using static de.softwaremess.loxnet.Stmt;
 
 namespace de.softwaremess.loxnet
@@ -54,6 +55,20 @@ namespace de.softwaremess.loxnet
             }
 
             return Evaluate(expr.right);
+        }
+
+        public object VisitSetExpr(Expr.Set expr)
+        {
+            object obj = Evaluate(expr.obj);
+
+            if (!(typeof(LoxInstance).IsInstanceOfType(obj)))
+            {
+                throw new RuntimeError(expr.name, "Only instances have fields.");
+            }
+
+            object value = Evaluate(expr.value);
+            ((LoxInstance)obj).Set(expr.name, value);
+            return value;
         }
 
         public object VisitUnaryExpr(Expr.Unary expr)
@@ -155,7 +170,8 @@ namespace de.softwaremess.loxnet
         public object VisitGetExpr(Expr.Get expr)
         {
             object obj = Evaluate(expr.expression);
-            if (typeof(LoxInstance).IsInstanceOfType(obj)) {
+            if (typeof(LoxInstance).IsInstanceOfType(obj))
+            {
                 return ((LoxInstance)obj).Get(expr.name);
             }
 
@@ -166,7 +182,7 @@ namespace de.softwaremess.loxnet
         public object VisitAssignExpr(Expr.Assign expr)
         {
             object value = Evaluate(expr.value);
-            int? distance; 
+            int? distance;
             if (locals.TryGetValue(expr, out distance))
             {
                 environment.AssignAt((int)distance, expr.name, value);
@@ -187,7 +203,7 @@ namespace de.softwaremess.loxnet
         private Object LookUpVariable(Token name, Expr expr)
         {
             int? distance;
-            
+
             if (locals.TryGetValue(expr, out distance))
             {
                 return environment.GetAt((int)distance, name.lexeme);

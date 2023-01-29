@@ -101,9 +101,9 @@ namespace de.softwaremess.loxnet
             if (increment != null)
             {
                 Stmt[] blockStmts = { body, new Stmt.Expression(increment) };
-                body = new Stmt.Block( new List<Stmt>(blockStmts) );
+                body = new Stmt.Block(new List<Stmt>(blockStmts));
             }
-            
+
             if (condition == null) condition = new Expr.Literal(true);
             body = new Stmt.While(condition, body);
 
@@ -198,7 +198,7 @@ namespace de.softwaremess.loxnet
             return new Stmt.Class(name, methods);
         }
 
-   
+
         private Stmt.Function Function(String kind)
         {
             Token name = Consume(TokenType.IDENTIFIER, "Expect " + kind + " name.");
@@ -247,15 +247,20 @@ namespace de.softwaremess.loxnet
         {
             Expr expr = Or();
 
-
             if (Match(TokenType.EQUAL))
             {
                 Token equals = Previous();
                 Expr value = Assignment();
 
-                if (typeof(Expr.Variable).IsInstanceOfType(expr)) {
+                if (typeof(Expr.Variable).IsInstanceOfType(expr))
+                {
                     Token name = ((Expr.Variable)expr).name;
                     return new Expr.Assign(name, value);
+                }
+                else if (typeof(Expr.Get).IsInstanceOfType(expr))
+                {
+                    Expr.Get get = (Expr.Get)expr;
+                    return new Expr.Set(get.expression, get.name, value);
                 }
 
                 Error(equals, "Invalid assignment target.");

@@ -153,6 +153,13 @@ namespace de.softwaremess.loxnet
             return null;
         }
 
+        public object VisitSetExpr(Expr.Set expr)
+        {
+            Resolve(expr.value);
+            Resolve(expr.obj);
+            return null;
+        }
+
         public object VisitUnaryExpr(Expr.Unary expr)
         {
             Resolve(expr.right);

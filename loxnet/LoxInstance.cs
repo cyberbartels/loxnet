@@ -27,6 +27,11 @@ namespace de.softwaremess.loxnet
             throw new RuntimeError(name, "Undefined property '" + name.lexeme + "'.");
         }
 
+        public void Set(Token name, object value)
+        {
+            fields[name.lexeme] = value;
+        }
+
         public override string ToString()
         {
             return klass.name + " instance";
