@@ -27,6 +27,14 @@ namespace de.softwaremess.loxnet
             METHOD
         }
 
+        private enum ClassType
+        {
+            NONE,
+            CLASS
+        }
+
+        private ClassType currentClass = ClassType.NONE;
+
         public object VisitBlockStmt(Stmt.Block stmt)
         {
             BeginScope();
@@ -37,6 +45,9 @@ namespace de.softwaremess.loxnet
 
         public object VisitClassStmt(Stmt.Class stmt)
         {
+            ClassType enclosingClass = currentClass;
+            currentClass = ClassType.CLASS;
+
             Declare(stmt.name);
             Define(stmt.name);
 
@@ -50,6 +61,8 @@ namespace de.softwaremess.loxnet
             }
 
             EndScope();
+
+            currentClass = enclosingClass;
 
             return null;
         }
@@ -175,6 +188,13 @@ namespace de.softwaremess.loxnet
 
         public object VisitThisExpr(Expr.This expr)
         {
+            if (currentClass == ClassType.NONE)
+            {
+                Lox.Error(expr.keyword,
+                    "Can't use 'this' outside of a class.");
+                return null;
+            }
+
             ResolveLocal(expr, expr.keyword);
             return null;
         }
