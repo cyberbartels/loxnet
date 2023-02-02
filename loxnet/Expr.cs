@@ -15,6 +15,7 @@ namespace de.softwaremess.loxnet
           R VisitLiteralExpr(Literal expr);
           R VisitLogicalExpr(Logical expr);
           R VisitSetExpr(Set expr);
+          R VisitThisExpr(This expr);
           R VisitUnaryExpr(Unary expr);
           R VisitVariableExpr(Variable expr);
       }
@@ -149,6 +150,20 @@ namespace de.softwaremess.loxnet
           public readonly Expr obj;
           public readonly Token name;
           public readonly Expr value;
+      }
+      public class This : Expr
+      {
+          public This(Token keyword)
+          {
+              this.keyword = keyword;
+          }
+
+          public override R Accept<R>(IVisitor<R> visitor)
+          {
+              return visitor.VisitThisExpr(this);
+          }
+
+          public readonly Token keyword;
       }
       public class Unary : Expr
       {
