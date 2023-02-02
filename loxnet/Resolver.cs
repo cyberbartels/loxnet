@@ -23,7 +23,8 @@ namespace de.softwaremess.loxnet
         private enum FunctionType
         {
             NONE,
-            FUNCTION
+            FUNCTION,
+            METHOD
         }
 
         public object VisitBlockStmt(Stmt.Block stmt)
@@ -38,6 +39,13 @@ namespace de.softwaremess.loxnet
         {
             Declare(stmt.name);
             Define(stmt.name);
+
+            foreach (Stmt.Function method in stmt.methods)
+            {
+                FunctionType declaration = FunctionType.METHOD;
+                ResolveFunction(method, declaration);
+            }
+
             return null;
         }
 

@@ -152,5 +152,22 @@ namespace de.softwaremess.loxnetTests
 
             interpreter.Interpret(stmts);
         }
+
+        [Test]
+        public void CanInterpretClassMethodInvokation()
+        {
+            Interpreter interpreter = new Interpreter();
+
+            Scanner scanner = new Scanner("class MyClass { toString() { print \"Hello from my class!\"; } }  MyClass().toString();");
+            List<Token> tokens = scanner.ScanTokens();
+
+            Parser parser = new Parser(tokens);
+            List<Stmt> stmts = parser.Parse();
+
+            Resolver resolver = new Resolver(interpreter);
+            resolver.Resolve(stmts);
+
+            interpreter.Interpret(stmts);
+        }
     }
 }

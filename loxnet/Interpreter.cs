@@ -285,7 +285,15 @@ namespace de.softwaremess.loxnet
         public object VisitClassStmt(Stmt.Class stmt)
         {
             environment.Define(stmt.name.lexeme, null);
-            LoxClass klass = new LoxClass(stmt.name.lexeme);
+
+            Dictionary<string, LoxFunction> methods = new Dictionary<string, LoxFunction>();
+            foreach (Stmt.Function method in stmt.methods)
+            {
+                LoxFunction function = new LoxFunction(method, environment);
+                methods[method.name.lexeme] = function;
+            }
+
+            LoxClass klass = new LoxClass(stmt.name.lexeme, methods);
             environment.Assign(stmt.name, klass);
             return null;
         }

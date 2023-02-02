@@ -24,6 +24,9 @@ namespace de.softwaremess.loxnet
                 return fields[name.lexeme];
             }
 
+            LoxFunction method = klass.FindMethod(name.lexeme);
+            if (method != null) return method;
+
             throw new RuntimeError(name, "Undefined property '" + name.lexeme + "'.");
         }
 
