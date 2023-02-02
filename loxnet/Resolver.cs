@@ -40,11 +40,16 @@ namespace de.softwaremess.loxnet
             Declare(stmt.name);
             Define(stmt.name);
 
+            BeginScope();
+            scopes.Peek()["this"] = true;
+
             foreach (Stmt.Function method in stmt.methods)
             {
                 FunctionType declaration = FunctionType.METHOD;
                 ResolveFunction(method, declaration);
             }
+
+            EndScope();
 
             return null;
         }
@@ -165,6 +170,12 @@ namespace de.softwaremess.loxnet
         {
             Resolve(expr.value);
             Resolve(expr.obj);
+            return null;
+        }
+
+        public object VisitThisExpr(Expr.This expr)
+        {
+            ResolveLocal(expr, expr.keyword);
             return null;
         }
 

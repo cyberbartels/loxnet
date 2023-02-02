@@ -71,6 +71,11 @@ namespace de.softwaremess.loxnet
             return value;
         }
 
+        public object VisitThisExpr(Expr.This expr)
+        {
+            return LookUpVariable(expr.keyword, expr);
+        }
+
         public object VisitUnaryExpr(Expr.Unary expr)
         {
             object right = Evaluate(expr.right);

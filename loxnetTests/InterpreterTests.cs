@@ -169,5 +169,24 @@ namespace de.softwaremess.loxnetTests
 
             interpreter.Interpret(stmts);
         }
+
+        [Test]
+        public void CanInterpretInstanceMethodInvokation()
+        {
+            Interpreter interpreter = new Interpreter();
+
+            Scanner scanner = new Scanner("class MyClass {  do() {    var someVar = \"my value\";print this.additionalProperty + \", \" + someVar + \"!\";  }} var instance = MyClass();instance.additionalProperty = \"Additional property value\";instance.do(); ");
+            List<Token> tokens = scanner.ScanTokens();
+
+            Parser parser = new Parser(tokens);
+            List<Stmt> stmts = parser.Parse();
+
+            Resolver resolver = new Resolver(interpreter);
+            resolver.Resolve(stmts);
+
+            interpreter.Interpret(stmts);
+        }
+
+        
     }
 }

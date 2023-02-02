@@ -419,6 +419,8 @@ namespace de.softwaremess.loxnet
                 return new Expr.Literal(Previous().literal);
             }
 
+            if (Match(TokenType.THIS)) return new Expr.This(Previous());
+
             if (Match(TokenType.IDENTIFIER))
             {
                 return new Expr.Variable(Previous());

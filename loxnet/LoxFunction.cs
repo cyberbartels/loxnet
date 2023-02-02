@@ -19,6 +19,13 @@ namespace de.softwaremess.loxnet
             this.declaration = declaration;
         }
 
+        public LoxFunction Bind(LoxInstance instance)
+        {
+            VarEnvironment environment = new VarEnvironment(closure);
+            environment.Define("this", instance);
+            return new LoxFunction(declaration, environment);
+        }
+
         public object Call(Interpreter interpreter, List<object> arguments)
         {
             VarEnvironment environment = new VarEnvironment(closure);

@@ -25,7 +25,7 @@ namespace de.softwaremess.loxnet
             }
 
             LoxFunction method = klass.FindMethod(name.lexeme);
-            if (method != null) return method;
+            if (method != null) return method.Bind(this); 
 
             throw new RuntimeError(name, "Undefined property '" + name.lexeme + "'.");
         }
