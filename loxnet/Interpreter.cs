@@ -248,7 +248,7 @@ namespace de.softwaremess.loxnet
 
         public object VisitFunctionStmt(Stmt.Function stmt)
         {
-            LoxFunction function = new LoxFunction(stmt, environment);
+            LoxFunction function = new LoxFunction(stmt, environment, false);
             environment.Define(stmt.name.lexeme, function);
             return null;
         }
@@ -294,7 +294,7 @@ namespace de.softwaremess.loxnet
             Dictionary<string, LoxFunction> methods = new Dictionary<string, LoxFunction>();
             foreach (Stmt.Function method in stmt.methods)
             {
-                LoxFunction function = new LoxFunction(method, environment);
+                LoxFunction function = new LoxFunction(method, environment, method.name.lexeme.Equals("init"));
                 methods[method.name.lexeme] = function;
             }
 

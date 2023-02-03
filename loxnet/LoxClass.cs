@@ -12,7 +12,14 @@ namespace de.softwaremess.loxnet
         public readonly string name;
         private readonly Dictionary<string, LoxFunction> methods;
 
-        public int Arity { get { return 0; } }
+        public int Arity { 
+            get 
+            {
+                LoxFunction initializer = FindMethod("init");
+                if (initializer == null) return 0;
+                return initializer.Arity;
+            } 
+        }
 
         public LoxClass(string name, Dictionary<string, LoxFunction> methods)
         {
@@ -39,6 +46,11 @@ namespace de.softwaremess.loxnet
                            List<Object> arguments)
         {
             LoxInstance instance = new LoxInstance(this);
+            LoxFunction initializer = FindMethod("init");
+            if (initializer != null)
+            {
+                initializer.Bind(instance).Call(interpreter, arguments);
+            }
             return instance;
         }
 

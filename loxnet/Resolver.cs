@@ -24,6 +24,7 @@ namespace de.softwaremess.loxnet
         {
             NONE,
             FUNCTION,
+            INITIALIZER,
             METHOD
         }
 
@@ -57,9 +58,12 @@ namespace de.softwaremess.loxnet
             foreach (Stmt.Function method in stmt.methods)
             {
                 FunctionType declaration = FunctionType.METHOD;
-                ResolveFunction(method, declaration);
+                if (method.name.lexeme.Equals("init"))
+                {
+                    declaration = FunctionType.INITIALIZER;
+                    ResolveFunction(method, declaration);
+                }
             }
-
             EndScope();
 
             currentClass = enclosingClass;
