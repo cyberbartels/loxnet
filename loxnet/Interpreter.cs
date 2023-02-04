@@ -289,6 +289,16 @@ namespace de.softwaremess.loxnet
 
         public object VisitClassStmt(Stmt.Class stmt)
         {
+            object superclass = null;
+            if (stmt.superclass != null)
+            {
+                superclass = Evaluate(stmt.superclass);
+                if (!(typeof(LoxClass).IsInstanceOfType(superclass))) {
+                    throw new RuntimeError(stmt.superclass.name,
+                        "Superclass must be a class.");
+                }
+            }
+
             environment.Define(stmt.name.lexeme, null);
 
             Dictionary<string, LoxFunction> methods = new Dictionary<string, LoxFunction>();
@@ -298,7 +308,7 @@ namespace de.softwaremess.loxnet
                 methods[method.name.lexeme] = function;
             }
 
-            LoxClass klass = new LoxClass(stmt.name.lexeme, methods);
+            LoxClass klass = new LoxClass(stmt.name.lexeme, (LoxClass)superclass, methods);
             environment.Assign(stmt.name, klass);
             return null;
         }

@@ -52,6 +52,18 @@ namespace de.softwaremess.loxnet
             Declare(stmt.name);
             Define(stmt.name);
 
+            if (stmt.superclass != null &&
+                    stmt.name.lexeme.Equals(stmt.superclass.name.lexeme))
+            {
+                Lox.Error(stmt.superclass.name,
+                    "A class can't inherit from itself.");
+            }
+
+            if (stmt.superclass != null)
+            {
+                Resolve(stmt.superclass);
+            }
+
             BeginScope();
             scopes.Peek()["this"] = true;
 
