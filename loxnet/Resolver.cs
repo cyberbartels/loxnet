@@ -31,7 +31,8 @@ namespace de.softwaremess.loxnet
         private enum ClassType
         {
             NONE,
-            CLASS
+            CLASS,
+            SUBCLASS
         }
 
         private ClassType currentClass = ClassType.NONE;
@@ -61,6 +62,7 @@ namespace de.softwaremess.loxnet
 
             if (stmt.superclass != null)
             {
+                currentClass = ClassType.SUBCLASS;
                 Resolve(stmt.superclass);
             }
 
@@ -218,6 +220,16 @@ namespace de.softwaremess.loxnet
 
         public object VisitSuperExpr(Expr.Super expr)
         {
+            if (currentClass == ClassType.NONE)
+            {
+                Lox.Error(expr.keyword,
+                    "Can't use 'super' outside of a class.");
+            }
+            else if (currentClass != ClassType.SUBCLASS)
+            {
+                Lox.Error(expr.keyword,
+                    "Can't use 'super' in a class with no superclass.");
+            }
             ResolveLocal(expr, expr.keyword);
             return null;
         }
