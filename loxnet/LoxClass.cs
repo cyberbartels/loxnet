@@ -36,6 +36,11 @@ namespace de.softwaremess.loxnet
                 return methods[name];
             }
 
+            if (superclass != null)
+            {
+                return superclass.FindMethod(name);
+            }
+
             return null;
         }
 
