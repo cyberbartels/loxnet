@@ -26,6 +26,7 @@ namespace de.softwaremess.loxnet.tool
                                          "Literal  : Object value",
                                          "Logical  : Expr left, Token op, Expr right",
                                          "Set      : Expr obj, Token name, Expr value",
+                                         "Super    : Token keyword, Token method",
                                          "This     : Token keyword",
                                          "Unary    : Token op, Expr right",
                                          "Variable : Token name"};
