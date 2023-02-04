@@ -204,6 +204,21 @@ namespace de.softwaremess.loxnetTests
             interpreter.Interpret(stmts);
         }
 
+        [Test]
+        public void CanInterpretClassInheritance()
+        {
+            Interpreter interpreter = new Interpreter();
 
+            Scanner scanner = new Scanner("class A { method(){print \"A method\";}}class B < A {method(){print \"B method\";}test(){super.method();}}class C < B {}C().test();");
+            List<Token> tokens = scanner.ScanTokens();
+
+            Parser parser = new Parser(tokens);
+            List<Stmt> stmts = parser.Parse();
+
+            Resolver resolver = new Resolver(interpreter);
+            resolver.Resolve(stmts);
+
+            interpreter.Interpret(stmts);
+        }
     }
 }

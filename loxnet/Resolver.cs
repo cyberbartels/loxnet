@@ -64,6 +64,12 @@ namespace de.softwaremess.loxnet
                 Resolve(stmt.superclass);
             }
 
+            if (stmt.superclass != null)
+            {
+                BeginScope();
+                scopes.Peek()["super"] = true;
+            }
+
             BeginScope();
             scopes.Peek()["this"] = true;
 
@@ -73,10 +79,12 @@ namespace de.softwaremess.loxnet
                 if (method.name.lexeme.Equals("init"))
                 {
                     declaration = FunctionType.INITIALIZER;
-                    ResolveFunction(method, declaration);
                 }
+                ResolveFunction(method, declaration);
             }
             EndScope();
+
+            if (stmt.superclass != null) EndScope();
 
             currentClass = enclosingClass;
 
@@ -121,6 +129,12 @@ namespace de.softwaremess.loxnet
 
             if (stmt.value != null)
             {
+                if (currentFunction == FunctionType.INITIALIZER)
+                {
+                    Lox.Error(stmt.keyword,
+                        "Can't return a value from an initializer.");
+                }
+                
                 Resolve(stmt.value);
             }
 
@@ -199,6 +213,12 @@ namespace de.softwaremess.loxnet
         {
             Resolve(expr.value);
             Resolve(expr.obj);
+            return null;
+        }
+
+        public object VisitSuperExpr(Expr.Super expr)
+        {
+            ResolveLocal(expr, expr.keyword);
             return null;
         }
 

@@ -71,6 +71,24 @@ namespace de.softwaremess.loxnet
             return value;
         }
 
+        public object VisitSuperExpr(Expr.Super expr)
+        {
+            int? distance = locals[expr];
+            LoxClass superclass = (LoxClass)environment.GetAt(
+                (int)distance, "super");
+            LoxInstance obj = (LoxInstance)environment.GetAt(
+                (int)distance - 1, "this");
+            LoxFunction method = superclass.FindMethod(expr.method.lexeme);
+
+            if (method == null)
+            {
+                throw new RuntimeError(expr.method,
+                    "Undefined property '" + expr.method.lexeme + "'.");
+            }
+
+            return method.Bind(obj);
+        }
+
         public object VisitThisExpr(Expr.This expr)
         {
             return LookUpVariable(expr.keyword, expr);
@@ -301,6 +319,12 @@ namespace de.softwaremess.loxnet
 
             environment.Define(stmt.name.lexeme, null);
 
+            if (stmt.superclass != null)
+            {
+                environment = new VarEnvironment(environment);
+                environment.Define("super", superclass);
+            }
+
             Dictionary<string, LoxFunction> methods = new Dictionary<string, LoxFunction>();
             foreach (Stmt.Function method in stmt.methods)
             {
@@ -309,6 +333,12 @@ namespace de.softwaremess.loxnet
             }
 
             LoxClass klass = new LoxClass(stmt.name.lexeme, (LoxClass)superclass, methods);
+           
+            if (superclass != null)
+            {
+                environment = environment.enclosing;
+            }
+
             environment.Assign(stmt.name, klass);
             return null;
         }
