@@ -31,7 +31,8 @@ namespace de.softwaremess.loxnet
         private enum ClassType
         {
             NONE,
-            CLASS
+            CLASS,
+            SUBCLASS
         }
 
         private ClassType currentClass = ClassType.NONE;
@@ -52,6 +53,25 @@ namespace de.softwaremess.loxnet
             Declare(stmt.name);
             Define(stmt.name);
 
+            if (stmt.superclass != null &&
+                    stmt.name.lexeme.Equals(stmt.superclass.name.lexeme))
+            {
+                Lox.Error(stmt.superclass.name,
+                    "A class can't inherit from itself.");
+            }
+
+            if (stmt.superclass != null)
+            {
+                currentClass = ClassType.SUBCLASS;
+                Resolve(stmt.superclass);
+            }
+
+            if (stmt.superclass != null)
+            {
+                BeginScope();
+                scopes.Peek()["super"] = true;
+            }
+
             BeginScope();
             scopes.Peek()["this"] = true;
 
@@ -61,10 +81,12 @@ namespace de.softwaremess.loxnet
                 if (method.name.lexeme.Equals("init"))
                 {
                     declaration = FunctionType.INITIALIZER;
-                    ResolveFunction(method, declaration);
                 }
+                ResolveFunction(method, declaration);
             }
             EndScope();
+
+            if (stmt.superclass != null) EndScope();
 
             currentClass = enclosingClass;
 
@@ -109,6 +131,12 @@ namespace de.softwaremess.loxnet
 
             if (stmt.value != null)
             {
+                if (currentFunction == FunctionType.INITIALIZER)
+                {
+                    Lox.Error(stmt.keyword,
+                        "Can't return a value from an initializer.");
+                }
+                
                 Resolve(stmt.value);
             }
 
@@ -187,6 +215,22 @@ namespace de.softwaremess.loxnet
         {
             Resolve(expr.value);
             Resolve(expr.obj);
+            return null;
+        }
+
+        public object VisitSuperExpr(Expr.Super expr)
+        {
+            if (currentClass == ClassType.NONE)
+            {
+                Lox.Error(expr.keyword,
+                    "Can't use 'super' outside of a class.");
+            }
+            else if (currentClass != ClassType.SUBCLASS)
+            {
+                Lox.Error(expr.keyword,
+                    "Can't use 'super' in a class with no superclass.");
+            }
+            ResolveLocal(expr, expr.keyword);
             return null;
         }
 

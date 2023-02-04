@@ -8,7 +8,7 @@ namespace de.softwaremess.loxnet
 {
     public class VarEnvironment
     {
-        private readonly VarEnvironment enclosing;
+        public readonly VarEnvironment enclosing;
         private readonly Dictionary<string, object> values = new Dictionary<string, object>();
 
         public VarEnvironment()

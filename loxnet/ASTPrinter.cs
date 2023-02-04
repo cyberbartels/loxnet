@@ -35,6 +35,11 @@ namespace de.softwaremess.loxnet
             return $"setter {expr.obj} {expr.value}";
         }
 
+        public string VisitSuperExpr(Expr.Super expr) 
+        {
+            return $"super {expr.method.toString()}";
+        }
+
         public string VisitThisExpr(Expr.This expr)
         {
             return $"{expr.keyword}";
