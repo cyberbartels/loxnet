@@ -38,6 +38,7 @@ namespace de.softwaremess.loxnet
         {
             try
             {
+                if (Match(TokenType.CLASS)) return ClassDeclaration();
                 if (Match(TokenType.FUN)) return Function("function");
                 if (Match(TokenType.VAR)) return VarDeclaration();
 
@@ -100,9 +101,9 @@ namespace de.softwaremess.loxnet
             if (increment != null)
             {
                 Stmt[] blockStmts = { body, new Stmt.Expression(increment) };
-                body = new Stmt.Block( new List<Stmt>(blockStmts) );
+                body = new Stmt.Block(new List<Stmt>(blockStmts));
             }
-            
+
             if (condition == null) condition = new Expr.Literal(true);
             body = new Stmt.While(condition, body);
 
@@ -164,20 +165,6 @@ namespace de.softwaremess.loxnet
             return statements;
         }
 
-        private Stmt VarDeclaration()
-        {
-            Token name = Consume(TokenType.IDENTIFIER, "Expect variable name.");
-
-            Expr initializer = null;
-            if (Match(TokenType.EQUAL))
-            {
-                initializer = Expression();
-            }
-
-            Consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
-            return new Stmt.Var(name, initializer);
-        }
-
         private Stmt WhileStatement()
         {
             Consume(TokenType.LEFT_PAREN, "Expect '(' after 'while'.");
@@ -194,6 +181,23 @@ namespace de.softwaremess.loxnet
             Consume(TokenType.SEMICOLON, "Expect ';' after expression.");
             return new Stmt.Expression(expr);
         }
+
+        private Stmt ClassDeclaration()
+        {
+            Token name = Consume(TokenType.IDENTIFIER, "Expect class name.");
+            Consume(TokenType.LEFT_BRACE, "Expect '{' before class body.");
+
+            List<Stmt.Function> methods = new List<Stmt.Function>();
+            while (!Check(TokenType.RIGHT_BRACE) && !IsAtEnd())
+            {
+                methods.Add(Function("method"));
+            }
+
+            Consume(TokenType.RIGHT_BRACE, "Expect '}' after class body.");
+
+            return new Stmt.Class(name, methods);
+        }
+
 
         private Stmt.Function Function(String kind)
         {
@@ -219,6 +223,21 @@ namespace de.softwaremess.loxnet
             return new Stmt.Function(name, parameters, body);
         }
 
+        private Stmt VarDeclaration()
+        {
+            Token name = Consume(TokenType.IDENTIFIER, "Expect variable name.");
+
+            Expr initializer = null;
+            if (Match(TokenType.EQUAL))
+            {
+                initializer = Expression();
+            }
+
+            Consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
+            return new Stmt.Var(name, initializer);
+        }
+
+
         private Expr Expression()
         {
             return Assignment();
@@ -228,15 +247,20 @@ namespace de.softwaremess.loxnet
         {
             Expr expr = Or();
 
-
             if (Match(TokenType.EQUAL))
             {
                 Token equals = Previous();
                 Expr value = Assignment();
 
-                if (typeof(Expr.Variable).IsInstanceOfType(expr)) {
+                if (typeof(Expr.Variable).IsInstanceOfType(expr))
+                {
                     Token name = ((Expr.Variable)expr).name;
                     return new Expr.Assign(name, value);
+                }
+                else if (typeof(Expr.Get).IsInstanceOfType(expr))
+                {
+                    Expr.Get get = (Expr.Get)expr;
+                    return new Expr.Set(get.expression, get.name, value);
                 }
 
                 Error(equals, "Invalid assignment target.");
@@ -350,6 +374,11 @@ namespace de.softwaremess.loxnet
                 {
                     expr = FinishCall(expr);
                 }
+                else if (Match(TokenType.DOT))
+                {
+                    Token name = Consume(TokenType.IDENTIFIER, "Expect property name after '.'.");
+                    expr = new Expr.Get(expr, name);
+                }
                 else
                 {
                     break;
@@ -389,6 +418,8 @@ namespace de.softwaremess.loxnet
             {
                 return new Expr.Literal(Previous().literal);
             }
+
+            if (Match(TokenType.THIS)) return new Expr.This(Previous());
 
             if (Match(TokenType.IDENTIFIER))
             {

@@ -25,6 +25,21 @@ namespace de.softwaremess.loxnet
             return expr.callee + "( " + expr.arguments.ToArray().ToString() + ")";
         }
 
+        public string VisitGetExpr(Expr.Get expr)
+        {
+            return $"getter {expr.expression}";
+        }
+
+        public string VisitSetExpr(Expr.Set expr)
+        {
+            return $"setter {expr.obj} {expr.value}";
+        }
+
+        public string VisitThisExpr(Expr.This expr)
+        {
+            return $"{expr.keyword}";
+        }
+
         public string VisitLogicalExpr(Expr.Logical expr)
         {
             return Parenthesize(expr.op.lexeme, expr.left, expr.right);

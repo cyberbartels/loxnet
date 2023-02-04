@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using de.softwaremess.loxnet.NativeFunction;
+using static de.softwaremess.loxnet.Expr;
 using static de.softwaremess.loxnet.Stmt;
 
 namespace de.softwaremess.loxnet
@@ -54,6 +55,25 @@ namespace de.softwaremess.loxnet
             }
 
             return Evaluate(expr.right);
+        }
+
+        public object VisitSetExpr(Expr.Set expr)
+        {
+            object obj = Evaluate(expr.obj);
+
+            if (!(typeof(LoxInstance).IsInstanceOfType(obj)))
+            {
+                throw new RuntimeError(expr.name, "Only instances have fields.");
+            }
+
+            object value = Evaluate(expr.value);
+            ((LoxInstance)obj).Set(expr.name, value);
+            return value;
+        }
+
+        public object VisitThisExpr(Expr.This expr)
+        {
+            return LookUpVariable(expr.keyword, expr);
         }
 
         public object VisitUnaryExpr(Expr.Unary expr)
@@ -152,11 +172,22 @@ namespace de.softwaremess.loxnet
             return function.Call(this, arguments);
         }
 
+        public object VisitGetExpr(Expr.Get expr)
+        {
+            object obj = Evaluate(expr.expression);
+            if (typeof(LoxInstance).IsInstanceOfType(obj))
+            {
+                return ((LoxInstance)obj).Get(expr.name);
+            }
+
+            throw new RuntimeError(expr.name,
+                "Only instances have properties.");
+        }
 
         public object VisitAssignExpr(Expr.Assign expr)
         {
             object value = Evaluate(expr.value);
-            int? distance; 
+            int? distance;
             if (locals.TryGetValue(expr, out distance))
             {
                 environment.AssignAt((int)distance, expr.name, value);
@@ -177,7 +208,7 @@ namespace de.softwaremess.loxnet
         private Object LookUpVariable(Token name, Expr expr)
         {
             int? distance;
-            
+
             if (locals.TryGetValue(expr, out distance))
             {
                 return environment.GetAt((int)distance, name.lexeme);
@@ -217,7 +248,7 @@ namespace de.softwaremess.loxnet
 
         public object VisitFunctionStmt(Stmt.Function stmt)
         {
-            LoxFunction function = new LoxFunction(stmt, environment);
+            LoxFunction function = new LoxFunction(stmt, environment, false);
             environment.Define(stmt.name.lexeme, function);
             return null;
         }
@@ -253,6 +284,22 @@ namespace de.softwaremess.loxnet
         public object VisitBlockStmt(Stmt.Block stmt)
         {
             ExecuteBlock(stmt.statements, new VarEnvironment(environment));
+            return null;
+        }
+
+        public object VisitClassStmt(Stmt.Class stmt)
+        {
+            environment.Define(stmt.name.lexeme, null);
+
+            Dictionary<string, LoxFunction> methods = new Dictionary<string, LoxFunction>();
+            foreach (Stmt.Function method in stmt.methods)
+            {
+                LoxFunction function = new LoxFunction(method, environment, method.name.lexeme.Equals("init"));
+                methods[method.name.lexeme] = function;
+            }
+
+            LoxClass klass = new LoxClass(stmt.name.lexeme, methods);
+            environment.Assign(stmt.name, klass);
             return null;
         }
 

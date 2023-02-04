@@ -8,29 +8,66 @@ using static System.Formats.Asn1.AsnWriter;
 
 namespace de.softwaremess.loxnet
 {
-    
+
     public class Resolver : Expr.IVisitor<object>, Stmt.IVisitor<object>
     {
         private readonly Interpreter interpreter;
         private readonly Stack<Dictionary<string, bool>> scopes = new Stack<Dictionary<string, bool>>();
         private FunctionType currentFunction = FunctionType.NONE;
 
-        public Resolver(Interpreter interpreter) 
-        { 
+        public Resolver(Interpreter interpreter)
+        {
             this.interpreter = interpreter;
         }
 
         private enum FunctionType
         {
             NONE,
-            FUNCTION
+            FUNCTION,
+            INITIALIZER,
+            METHOD
         }
+
+        private enum ClassType
+        {
+            NONE,
+            CLASS
+        }
+
+        private ClassType currentClass = ClassType.NONE;
 
         public object VisitBlockStmt(Stmt.Block stmt)
         {
             BeginScope();
             Resolve(stmt.statements);
             EndScope();
+            return null;
+        }
+
+        public object VisitClassStmt(Stmt.Class stmt)
+        {
+            ClassType enclosingClass = currentClass;
+            currentClass = ClassType.CLASS;
+
+            Declare(stmt.name);
+            Define(stmt.name);
+
+            BeginScope();
+            scopes.Peek()["this"] = true;
+
+            foreach (Stmt.Function method in stmt.methods)
+            {
+                FunctionType declaration = FunctionType.METHOD;
+                if (method.name.lexeme.Equals("init"))
+                {
+                    declaration = FunctionType.INITIALIZER;
+                    ResolveFunction(method, declaration);
+                }
+            }
+            EndScope();
+
+            currentClass = enclosingClass;
+
             return null;
         }
 
@@ -122,6 +159,12 @@ namespace de.softwaremess.loxnet
             return null;
         }
 
+        public object VisitGetExpr(Expr.Get expr)
+        {
+            Resolve(expr.expression);
+            return null;
+        }
+
         public object VisitGroupingExpr(Expr.Grouping expr)
         {
             Resolve(expr.expression);
@@ -137,6 +180,26 @@ namespace de.softwaremess.loxnet
         {
             Resolve(expr.left);
             Resolve(expr.right);
+            return null;
+        }
+
+        public object VisitSetExpr(Expr.Set expr)
+        {
+            Resolve(expr.value);
+            Resolve(expr.obj);
+            return null;
+        }
+
+        public object VisitThisExpr(Expr.This expr)
+        {
+            if (currentClass == ClassType.NONE)
+            {
+                Lox.Error(expr.keyword,
+                    "Can't use 'this' outside of a class.");
+                return null;
+            }
+
+            ResolveLocal(expr, expr.keyword);
             return null;
         }
 
@@ -219,7 +282,7 @@ namespace de.softwaremess.loxnet
         private void Define(Token name)
         {
             if (scopes.Count == 0) return;
-            scopes.Peek()[name.lexeme] = true; 
+            scopes.Peek()[name.lexeme] = true;
         }
 
         private void ResolveLocal(Expr expr, Token name)

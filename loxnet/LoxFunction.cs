@@ -13,16 +13,27 @@ namespace de.softwaremess.loxnet
         private readonly VarEnvironment closure;
 
         public int Arity { get { return declaration.parameters.Count; } }
-        public LoxFunction(Stmt.Function declaration, VarEnvironment closure)
+        private readonly bool isInitializer;
+
+        public LoxFunction(Stmt.Function declaration, VarEnvironment closure, bool isInitializer)
         {
-            this.closure= closure;
+            this.isInitializer = isInitializer;
+            this.closure = closure;
             this.declaration = declaration;
+        }
+
+        public LoxFunction Bind(LoxInstance instance)
+        {
+            VarEnvironment environment = new VarEnvironment(closure);
+            environment.Define("this", instance);
+            return new LoxFunction(declaration, environment, isInitializer);
         }
 
         public object Call(Interpreter interpreter, List<object> arguments)
         {
             VarEnvironment environment = new VarEnvironment(closure);
-            for (int i = 0; i < declaration.parameters.Count; i++) {
+            for (int i = 0; i < declaration.parameters.Count; i++)
+            {
                 environment.Define(declaration.parameters[i].lexeme,
                     arguments[i]);
             }
@@ -33,8 +44,10 @@ namespace de.softwaremess.loxnet
             }
             catch (Return returnValue)
             {
+                if (isInitializer) return closure.GetAt(0, "this");
                 return returnValue.value;
             }
+            if (isInitializer) return closure.GetAt(0, "this");
             return null;
         }
 

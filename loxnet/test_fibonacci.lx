@@ -1,0 +1,14 @@
+﻿fun fib(n) {
+ // print n;
+  if (n < 2) return n;
+  return fib(n - 1) + fib(n - 2); 
+}
+
+var before = clock();
+for(var i = 0; i < 20; i=i+1) {
+	print fib(i);
+}
+var after = clock();
+print before;
+print after;
+print after - before;

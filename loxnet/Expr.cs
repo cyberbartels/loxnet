@@ -10,9 +10,12 @@ namespace de.softwaremess.loxnet
           R VisitAssignExpr(Assign expr);
           R VisitBinaryExpr(Binary expr);
           R VisitCallExpr(Call expr);
+          R VisitGetExpr(Get expr);
           R VisitGroupingExpr(Grouping expr);
           R VisitLiteralExpr(Literal expr);
           R VisitLogicalExpr(Logical expr);
+          R VisitSetExpr(Set expr);
+          R VisitThisExpr(This expr);
           R VisitUnaryExpr(Unary expr);
           R VisitVariableExpr(Variable expr);
       }
@@ -68,6 +71,22 @@ namespace de.softwaremess.loxnet
           public readonly Token paren;
           public readonly List<Expr> arguments;
       }
+      public class Get : Expr
+      {
+          public Get(Expr expression, Token name)
+          {
+              this.expression = expression;
+              this.name = name;
+          }
+
+          public override R Accept<R>(IVisitor<R> visitor)
+          {
+              return visitor.VisitGetExpr(this);
+          }
+
+          public readonly Expr expression;
+          public readonly Token name;
+      }
       public class Grouping : Expr
       {
           public Grouping(Expr expression)
@@ -113,6 +132,38 @@ namespace de.softwaremess.loxnet
           public readonly Expr left;
           public readonly Token op;
           public readonly Expr right;
+      }
+      public class Set : Expr
+      {
+          public Set(Expr obj, Token name, Expr value)
+          {
+              this.obj = obj;
+              this.name = name;
+              this.value = value;
+          }
+
+          public override R Accept<R>(IVisitor<R> visitor)
+          {
+              return visitor.VisitSetExpr(this);
+          }
+
+          public readonly Expr obj;
+          public readonly Token name;
+          public readonly Expr value;
+      }
+      public class This : Expr
+      {
+          public This(Token keyword)
+          {
+              this.keyword = keyword;
+          }
+
+          public override R Accept<R>(IVisitor<R> visitor)
+          {
+              return visitor.VisitThisExpr(this);
+          }
+
+          public readonly Token keyword;
       }
       public class Unary : Expr
       {
